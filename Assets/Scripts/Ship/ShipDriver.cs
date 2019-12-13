@@ -1,24 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ShipDriver : MonoBehaviour
+namespace Ship
 {
-    public Rigidbody rb;
+    public class ShipDriver : MonoBehaviour
+    {
+        public Rigidbody rb;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            rb = GetComponent<Rigidbody>();
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
+        // Update is called once per frame
+        void Update()
+        {
+        }
 
-    void FixedUpdate()
-    {
-        rb.velocity = new Vector3(0, 0, 1);
+        void FixedUpdate()
+        {
+            rb.velocity = new Vector3(0, 0, 1);
+        }
     }
 }
