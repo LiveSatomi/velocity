@@ -1,0 +1,55 @@
+{
+    "name": "ShipInputAction",
+    "maps": [
+        {
+            "name": "ShipControls",
+            "id": "8fd8bb6f-7ccb-4327-8470-0e63b2cd77cf",
+            "actions": [
+                {
+                    "name": "ChangeLane",
+                    "type": "PassThrough",
+                    "id": "6e0bf8a1-b130-4a71-889b-a3226c6dd4f7",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "Arrow",
+                    "id": "558bfff3-9e53-44c7-8ae6-f34c43ed5565",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeLane",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "d4c6ef01-8890-4d98-9836-2490f2bd9870",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeLane",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "b5b07a9f-3095-4892-882c-38eff37c0c14",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeLane",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
