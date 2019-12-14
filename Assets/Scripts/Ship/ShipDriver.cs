@@ -9,15 +9,22 @@ namespace Ship
 
         private ShipInputAction inputAction;
 
-        private float changeDirection;
-        private float xVelocity;
+        public float InputDirection { get; private set; }
+        public float changeSpeed;
+        public float changeProgress;
+        public float ChangeDirection { get; set; }
+        public float ChangeStartPosition { get; set; }
+
+        public float minSpeed = 3;
+        private Animator animator;
+        public AnimationCurve curve;
 
         void Awake()
         {
             inputAction = new ShipInputAction();
             inputAction.ShipControls.ChangeLane.performed += ctx =>
             {
-                changeDirection = ctx.ReadValue<float>();
+                InputDirection = Math.Sign(ctx.ReadValue<float>());
             };
         }
         
@@ -25,27 +32,25 @@ namespace Ship
         void Start()
         {
             rb = GetComponent<Rigidbody>();
+            animator = GetComponent<Animator>();
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (changeDirection < 0)
+            animator.SetFloat("changeDirection", InputDirection);
+            if (Math.Abs(ChangeDirection) > .01)
             {
-                xVelocity = -1;
-            } else if (changeDirection > 0)
-            {
-                xVelocity = 1;
-            }
-            else
-            {
-                xVelocity = 0;
+                var positionNow = transform.position;
+                positionNow.x = changeProgress * ChangeDirection + ChangeStartPosition;
+                transform.position = positionNow;
             }
         }
 
         void FixedUpdate()
         {
-            rb.velocity = new Vector3(xVelocity, 0, 1);
+            rb.velocity = new Vector3(0, 0, minSpeed);
+            
         }
 
         private void OnEnable()
