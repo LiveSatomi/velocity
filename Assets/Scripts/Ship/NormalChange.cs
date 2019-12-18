@@ -8,13 +8,11 @@ namespace Ship
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Debug.Log("enter state");
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
             shipDriver.ChangeDirection = shipDriver.InputDirection;
             shipDriver.ChangeStartPosition = shipDriver.transform.position.x;
         }
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            Debug.Log("exitState");
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
             shipDriver.ChangeDirection = 0;
             var pos = shipDriver.transform.position;
