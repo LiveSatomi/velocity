@@ -7,25 +7,12 @@ public enum Orientation
     Horizontal,
     Vertical
 }
-public class CreatePlane 
+public static class MeshCreator 
 {
 
-
-    public static GameObject Create( string name, int widthSegments, int lengthSegments, float width, float length, Orientation orientation, bool twoSided)
+    public static Mesh CreatePlane( string name, int widthSegments, int lengthSegments, float width, float length, Orientation orientation, bool twoSided)
     {
-        GameObject plane = new GameObject();
-        plane.SetActive(false);
- 
-        plane.name = name;
-        
-        plane.transform.position = Vector3.zero;
-
-        MeshFilter meshFilter = (MeshFilter)plane.AddComponent(typeof(MeshFilter));
-        plane.AddComponent(typeof(MeshRenderer));
- 
-        Mesh m = new Mesh();
-        m.name = plane.name;
-
+        Mesh m = new Mesh {name = name};
         int hCount2 = widthSegments+1;
         int vCount2 = lengthSegments+1;
         int numTriangles = widthSegments * lengthSegments * 6;
@@ -97,10 +84,9 @@ public class CreatePlane
         m.triangles = triangles;
         m.tangents = tangents;
         m.RecalculateNormals();
-        
-        meshFilter.sharedMesh = m;
         m.RecalculateBounds();
-        return plane;
+
+        return m;
     }
 }
 }

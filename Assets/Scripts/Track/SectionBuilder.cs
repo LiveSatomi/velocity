@@ -6,6 +6,8 @@ namespace Track
     public class SectionBuilder: MonoBehaviour
     {
 
+        public TrackSection section;
+        
         public int width = 1;
 
         public int length = 10;
@@ -14,20 +16,33 @@ namespace Track
         
         public TrackSection BuildSection()
         {
-            var section = CreatePlane.Create("Plane", 1, 1, width, length, Orientation.Horizontal, false);
+            var sectionMesh = MeshCreator.CreatePlane( "GeneratedPlane", 1, 1, width, length, Orientation.Horizontal, false);
+            var trackSection = Instantiate(section);
+            trackSection.name = "Section";
+            trackSection.gameObject.SetActive(false);
+            
+            
+            
+            MeshFilter meshFilter = trackSection.gameObject.AddComponent<MeshFilter>();
+            meshFilter.sharedMesh = sectionMesh;
+            var meshRenderer = trackSection.gameObject.AddComponent<MeshRenderer>();
+            meshRenderer.material = section.material;
+
+            var trans = trackSection.transform;
+
             var startPoint = new GameObject("StartPoint") {tag = "StartPoint"};
-            startPoint.transform.parent = section.transform;
+            startPoint.transform.parent = trans;
             startPoint.transform.localPosition = new Vector3(0, 0, -length / 2f);
 
             var endPoint = new GameObject("EndPoint") {tag = "EndPoint"};
-            endPoint.transform.parent = section.transform;
+            endPoint.transform.parent = trans;
             endPoint.transform.localPosition = new Vector3(0, 0, length / 2f);
             
             var threshold = new GameObject("Threshold") {tag = "Threshold"};
-            threshold.transform.parent = section.transform;
+            threshold.transform.parent = trans;
             threshold.transform.localPosition = new Vector3(0, 0, -length / 2f - thresholdDistance);
 
-            return section.AddComponent<TrackSection>();
+            return trackSection;
         }
     }
 }

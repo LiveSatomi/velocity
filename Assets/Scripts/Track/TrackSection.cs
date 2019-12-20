@@ -7,6 +7,9 @@ namespace Track
 {
     public class TrackSection : MonoBehaviour, IPoolable
     {
+
+        public Material material;
+        
         public Transform Threshold { get; private set; }
         public Transform StartPoint { get; private set; }
         public Transform EndPoint { get; private set; }
