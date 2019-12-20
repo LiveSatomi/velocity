@@ -44,7 +44,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 95aab24d7dd5a400380acd362813e464,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -617,9 +618,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1194197432}
   - component: {fileID: 1194197433}
+  - component: {fileID: 1194197434}
+  - component: {fileID: 1194197435}
   m_Layer: 0
   m_Name: Track
-  m_TagString: Untagged
+  m_TagString: Track
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -650,8 +653,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7ecee7041deee63b0cdea38a37cdd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trackSection: {fileID: 4697664654819592412, guid: ea518440a0f7205d0a2f327b8f94c42c,
-    type: 3}
+  sectionBuilder: {fileID: 1194197434}
+  lookAhead: 20
+--- !u!114 &1194197434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194197431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 705e1185507f4b8db5fb19cfa1773f27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 10
+  length: 10
+  thresholdDistance: 5
+--- !u!114 &1194197435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194197431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eea08375da243a441b88d1e6b0713006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
+  Notification: 3
+  Preload: 0
+  Capacity: 22
+  Recycle: 1
+  Persist: 0
+  Stamp: 0
+  Warnings: 1
+  spawnedClonesList: []
+  despawnedClones: []
+  delays: []
 --- !u!1 &1194403508
 GameObject:
   m_ObjectHideFlags: 0

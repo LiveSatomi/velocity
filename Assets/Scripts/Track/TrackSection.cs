@@ -1,38 +1,48 @@
 ﻿using System;
+using Lean.Pool;
+using Ship;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Track
 {
-    public class TrackSection : MonoBehaviour
+    public class TrackSection : MonoBehaviour, IPoolable
     {
+        public Transform Threshold { get; private set; }
+        public Transform StartPoint { get; private set; }
+        public Transform EndPoint { get; private set; }
 
-        private Boolean preparedNextSection;
-        private Transform threshold;
-        private GameObject player;
-        public TrackBuilder builder;
-        private Transform endpoint;
+        private ShipDriver ship;
+        private TrackBuilder track;
 
-        // Start is called before the first frame update
-        void Start()
+        private bool thresholdPassed;
+        
+        void Awake()
         {
-            endpoint = transform.Find("Endpoint");
-            player = GameObject.FindWithTag("Player");
-            threshold = transform.Find("Threshold");
-            builder = Object.FindObjectOfType<TrackBuilder>();
+            StartPoint = transform.Find("StartPoint");
+            EndPoint = transform.Find("EndPoint");
+            Threshold = transform.Find("Threshold");
+            ship = GameObject.FindWithTag("Player").GetComponent<ShipDriver>();
+            track = GameObject.FindWithTag("Track").GetComponent<TrackBuilder>();
+            
         }
 
-        // Update is called once per frame
-        void Update()
+        private void Update()
         {
-            if (!preparedNextSection)
+            if (!thresholdPassed && ship.transform.position.z > Threshold.transform.position.z)
             {
-                if (player.transform.position.z > threshold.position.z)
-                {
-                    builder.AddSection(endpoint);
-                    preparedNextSection = true;
-                }
+                track.AddSection();
+                thresholdPassed = true;
             }
+        }
+
+        public void OnSpawn()
+        {
+            
+        }
+
+        public void OnDespawn()
+        {
+            thresholdPassed = false;
         }
     }
 }
