@@ -668,7 +668,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   section: {fileID: 8120704476403734592, guid: ea518440a0f7205d0a2f327b8f94c42c, type: 3}
-  width: 10
+  lanes: 7
+  laneWidth: 3
+  gutterWidth: 0.25
   length: 10
   thresholdDistance: 5
 --- !u!114 &1194197435
@@ -811,6 +813,11 @@ PrefabInstance:
       propertyPath: timeController
       value: 
       objectReference: {fileID: 1082212741}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneWidth
+      value: 3.25
+      objectReference: {fileID: 0}
     - target: {fileID: 7993975454490733655, guid: cb45ce4264deef23aa832707475e716c,
         type: 3}
       propertyPath: m_LocalPosition.x

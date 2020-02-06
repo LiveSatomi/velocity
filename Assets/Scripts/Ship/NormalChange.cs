@@ -14,10 +14,13 @@ namespace Ship
         }
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
+            var transform = shipDriver.transform;
+
+            var pos = transform.position;
+            pos.x = shipDriver.ChangeStartPosition + shipDriver.laneWidth * shipDriver.ChangeDirection;
+            transform.position = pos;
+
             shipDriver.ChangeDirection = 0;
-            var pos = shipDriver.transform.position;
-            pos.x = (float) Math.Round(pos.x);
-            shipDriver.transform.position = pos;
         }
     }
     
