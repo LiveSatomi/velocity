@@ -8,8 +8,10 @@ namespace Track
     public class TrackSection : MonoBehaviour, IPoolable
     {
 
-        public Material material;
-        
+        public Material laneMaterial;
+
+        public Material gutterMaterial;
+
         public Transform Threshold { get; private set; }
         public Transform StartPoint { get; private set; }
         public Transform EndPoint { get; private set; }
@@ -18,7 +20,7 @@ namespace Track
         private TrackBuilder track;
 
         private bool thresholdPassed;
-        
+
         void Awake()
         {
             StartPoint = transform.Find("StartPoint");
@@ -26,7 +28,7 @@ namespace Track
             Threshold = transform.Find("Threshold");
             ship = GameObject.FindWithTag("Player").GetComponent<ShipDriver>();
             track = GameObject.FindWithTag("Track").GetComponent<TrackBuilder>();
-            
+
         }
 
         private void Update()
@@ -40,7 +42,7 @@ namespace Track
 
         public void OnSpawn()
         {
-            
+
         }
 
         public void OnDespawn()

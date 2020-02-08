@@ -43,4 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80b158db182e6b8e39d33572696d48c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 8989d822f53b241c2b0f8ed4cc43e6cc, type: 2}
+  laneMaterial: {fileID: 2100000, guid: 8989d822f53b241c2b0f8ed4cc43e6cc, type: 2}
+  gutterMaterial: {fileID: 2100000, guid: d7920f274f74d4235ab19fc6606d0662, type: 2}
