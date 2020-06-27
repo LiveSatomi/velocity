@@ -9,7 +9,13 @@ namespace Track
     {
         public SectionBuilder sectionBuilder;
 
+        public ObstaclePlacer obstaclePlacer;
+
+        /// <summary>
+        /// Number of sections generated ahead of the player.
+        /// </summary>
         public int lookAhead = 10; 
+        
         private TrackSection trackSection;
 
         private TrackSection lastSection;
@@ -26,12 +32,6 @@ namespace Track
             }
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
-
         public void AddSection()
         {
             lastSection = AddSection(lastSection.EndPoint);
@@ -40,7 +40,8 @@ namespace Track
         private TrackSection AddSection(Transform endpoint)
         {
             var position = new Vector3(0, 0,endpoint.position.z + sectionBuilder.length / 2f);
-            return LeanPool.Spawn(trackSection, position, Quaternion.identity, transform);
+            var newSection = LeanPool.Spawn(trackSection, position, Quaternion.identity, transform);
+            return newSection;
         }
     }
 }

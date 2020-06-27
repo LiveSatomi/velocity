@@ -66,9 +66,11 @@ namespace Track
                 var laneSection = CreateSectionMesh("LaneSection", offset, laneWidth, section.laneMaterial);
                 offset = i * (laneWidth + gutterWidth) + (laneWidth + gutterWidth) / 2.0f;
                 var gutterSection = CreateSectionMesh( "GutterSection", offset, gutterWidth,  section.gutterMaterial);
-                laneSection.transform.parent = trans;
-                gutterSection.transform.parent = trans;
+                laneSection.transform.parent = trans.Find("Lanes").transform;
+                gutterSection.transform.parent = trans.Find("Gutters").transform;
             }
+
+            trackSection.Lanes = lanes;
 
             return trackSection;
         }

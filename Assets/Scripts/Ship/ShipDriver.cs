@@ -4,8 +4,11 @@ using UnityEngine;
 
 namespace Ship
 {
-    public class ShipDriver : MonoBehaviour
-    {
+    public class ShipDriver : MonoBehaviour {
+        public delegate void CourseFinishedEvent();
+
+        public static event CourseFinishedEvent OnCourseFinished;
+        
         private Rigidbody rb;
 
         private ShipInputAction inputAction;
@@ -21,7 +24,10 @@ namespace Ship
         public float laneWidth = 2;
 
         private float speedBoost = 1;
-        private float speed;
+        public float Speed { get; private set; }
+
+        private bool collided = false;
+        
         private Animator animator;
 
         void Awake()
@@ -44,20 +50,24 @@ namespace Ship
         // Update is called once per frame
         void Update()
         {
-            animator.SetFloat("changeDirection", InputDirection);
-            speed = timeController.CurrentMinSpeed() + speedBoost;
-            if (Math.Abs(ChangeDirection) > .01)
-            {
-                var trans = transform;
-                var positionNow = trans.position;
-                positionNow.x = changeProgress * ChangeDirection * laneWidth + ChangeStartPosition;
-                trans.position = positionNow;
+            if (!collided) {
+                animator.SetFloat("changeDirection", InputDirection);
+                Speed = timeController.CurrentMinSpeed() + speedBoost;
+                if (Math.Abs(ChangeDirection) > .01)
+                {
+                    var trans = transform;
+                    var positionNow = trans.position;
+                    positionNow.x = changeProgress * ChangeDirection * laneWidth + ChangeStartPosition;
+                    trans.position = positionNow;
+                }
             }
         }
 
         void FixedUpdate()
         {
-            rb.velocity = new Vector3(0, 0, speed);
+            if (!collided) {
+                rb.velocity = new Vector3(0, 0, Speed);
+            }
             
         }
 
@@ -69,6 +79,12 @@ namespace Ship
         private void OnDisable()
         {
             inputAction.Disable();
+        }
+
+        public void CollideWithObstacle() {
+            OnCourseFinished?.Invoke();
+            collided = true;
+            rb.velocity = new Vector3(0,0,0);
         }
     }
 }

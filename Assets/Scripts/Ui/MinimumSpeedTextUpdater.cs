@@ -19,7 +19,7 @@ namespace Ui
         void Update()
         {
             var currentMinSpeed = timeController.CurrentMinSpeed();
-            text.text = "Speed: " + currentMinSpeed.ToString("n1");
+            text.text = "Minimum: " + currentMinSpeed.ToString("n1");
         }
     }
 }
