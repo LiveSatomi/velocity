@@ -1,18 +1,16 @@
-using System;
 using Ship;
 using UnityEngine;
 
 namespace Controller {
     /// <summary>
-    /// Collects stats from everything that could affect the player's score.
+    ///     Collects stats from everything that could affect the player's score.
     /// </summary>
-    public class StatCollector: MonoBehaviour {
+    public class StatCollector : MonoBehaviour {
+        private float finalSpeed;
+
         public ShipDriver ship;
 
         public TimeController timeController;
-
-
-        private float finalSpeed;
 
         public void OnEnable() {
             ShipDriver.OnCourseFinished += CollectFinalStats;
@@ -26,6 +24,4 @@ namespace Controller {
             finalSpeed = ship.Speed;
         }
     }
-    
- 
 }

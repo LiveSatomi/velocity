@@ -1,17 +1,14 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Ship
-{
-    public class NormalChange : StateMachineBehaviour
-    {
+namespace Ship {
+    public class NormalChange : StateMachineBehaviour {
         // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-        {
+        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
             shipDriver.ChangeDirection = shipDriver.InputDirection;
             shipDriver.ChangeStartPosition = shipDriver.transform.position.x;
         }
+
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
             var transform = shipDriver.transform;
@@ -23,7 +20,4 @@ namespace Ship
             shipDriver.ChangeDirection = 0;
         }
     }
-    
-
-
 }

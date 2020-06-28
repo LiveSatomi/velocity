@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Lean.Pool;
 using Ship;
@@ -11,36 +10,34 @@ namespace Track {
 
         public Material laneMaterial;
 
-        /// <summary>
-        ///     The number of lanes this section has; this should match the mesh attached to the GameObject
-        /// </summary>
-        public int Lanes { get; set; }
-        
-       
-        public Transform Threshold { get; private set; }
-
-        public Transform StartPoint { get; private set; }
-
-        public Transform EndPoint { get; private set; }
-        
         private ShipDriver ship;
 
         private bool thresholdPassed;
 
         private TrackBuilder track;
 
+        /// <summary>
+        ///     The number of lanes this section has; this should match the mesh attached to the GameObject
+        /// </summary>
+        public int Lanes { get; set; }
+
+
+        public Transform Threshold { get; private set; }
+
+        public Transform StartPoint { get; private set; }
+
+        public Transform EndPoint { get; private set; }
+
 
         public void OnSpawn() {
-            track.obstaclePlacer.PlaceObstacles(this, new TrackSection[] {});
+            track.obstaclePlacer.PlaceObstacles(this, new TrackSection[] { });
         }
 
         public void OnDespawn() {
             thresholdPassed = false;
             foreach (var lane in GetLanes()) {
                 var obstacles = lane.GetComponentsInChildren<Obstacle>();
-                foreach (var obstacle in obstacles) {
-                    track.obstaclePlacer.DespawnObstacle(obstacle);
-                }
+                foreach (var obstacle in obstacles) track.obstaclePlacer.DespawnObstacle(obstacle);
             }
         }
 

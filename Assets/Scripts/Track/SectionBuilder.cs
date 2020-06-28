@@ -9,9 +9,9 @@ namespace Track
     public class SectionBuilder: MonoBehaviour
     {
         ///
-        /// A prefab with components other than the mesh.
+        /// Size of the space between the lanes.
         ///
-        public TrackSection section;
+        public float gutterWidth = .25f;
 
         ///
         /// Number of lanes.
@@ -24,14 +24,14 @@ namespace Track
         public int laneWidth = 3;
 
         ///
-        /// Size of the space between the lanes.
-        ///
-        public float gutterWidth = .25f;
-
-        ///
         /// Difference between where the plane is entered and exited.
         ///
         public int length = 10;
+
+        ///
+        /// A prefab with components other than the mesh.
+        ///
+        public TrackSection section;
 
         /// Distance before the entrance that the threshold is placed.
         public int thresholdDistance = 5;
@@ -60,7 +60,7 @@ namespace Track
             threshold.transform.localPosition = new Vector3(0, 0, -length / 2f - thresholdDistance);
 
 
-            for (int i = -lanes; i < lanes; i++)
+            for (var i = -lanes; i < lanes; i++)
             {
                 var offset = i * (laneWidth + gutterWidth);
                 var laneSection = CreateSectionMesh("LaneSection", offset, laneWidth, section.laneMaterial);
@@ -85,7 +85,7 @@ namespace Track
 
             var sectionMesh = MeshCreator.CreatePlane("GeneratedPlane", 1, 2, width, length, Orientation.Horizontal, false);
 
-            MeshFilter sectionFilter = laneSection.gameObject.AddComponent<MeshFilter>();
+            var sectionFilter = laneSection.gameObject.AddComponent<MeshFilter>();
             sectionFilter.sharedMesh = sectionMesh;
             var sectionRenderer = laneSection.gameObject.AddComponent<MeshRenderer>();
             sectionRenderer.material = material;

@@ -3,87 +3,84 @@ using Controller;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Ship
-{
+namespace Ship {
     public class ShipDriver : MonoBehaviour {
         public delegate void CourseFinishedEvent();
 
-        public static event CourseFinishedEvent OnCourseFinished;
-        
-        private Rigidbody rb;
+        private static readonly int AnimatorChangeDirection = Animator.StringToHash("changeDirection");
+
+        private readonly float speedBoost = 1;
+
+        private Animator animator;
+
+        public float changeProgress;
+
+        private bool collided;
 
         private ShipInputAction inputAction;
-
-        public TimeController timeController;
-        
-        public float InputDirection { get; private set; }
-        public float changeProgress;
-        public float ChangeDirection { get; set; }
-        public float ChangeStartPosition { get; set; }
 
         // TODO Initialize this from TrackBuilder or elsewhere
         public float laneWidth = 2;
 
-        private float speedBoost = 1;
+        private Rigidbody rb;
+
+        public TimeController timeController;
+
+        public float InputDirection { get; private set; }
+
+        public float ChangeDirection { get; set; }
+
+        public float ChangeStartPosition { get; set; }
+
         public float Speed { get; private set; }
 
-        private bool collided = false;
-        
-        private Animator animator;
+        public static event CourseFinishedEvent OnCourseFinished;
 
-        private static readonly int AnimatorChangeDirection = Animator.StringToHash("changeDirection");
-
-        void Awake()
-        {
+        private void Awake() {
             inputAction = new ShipInputAction();
-            inputAction.ShipControls.ChangeLane.performed += ctx =>
-            {
+            inputAction.ShipControls.ChangeLane.performed += ctx => {
                 InputDirection = Math.Sign(ctx.ReadValue<float>());
             };
         }
-        
+
         // Start is called before the first frame update
-        void Start()
-        {
+        private void Start() {
             rb = GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
-
         }
 
         // Update is called once per frame
-        void Update()
-        {
+        private void Update() {
             if (!collided) {
                 animator.SetFloat(AnimatorChangeDirection, InputDirection);
                 Speed = timeController.CurrentMinSpeed() + speedBoost;
-                var trans = transform;
-                var positionNow = trans.position;
-                if (Math.Abs(ChangeDirection) > .01)
-                {
-                    positionNow.x = changeProgress * ChangeDirection * laneWidth + ChangeStartPosition;
-                }
-
-                positionNow.z = trans.position.z + Speed * Time.deltaTime;
-                trans.position = positionNow;
             }
         }
 
+        private void FixedUpdate() {
+            var trans = transform;
+            var positionNow = trans.position;
+            if (Math.Abs(ChangeDirection) > .01)
+                positionNow.x = changeProgress * ChangeDirection * laneWidth + ChangeStartPosition;
 
-        private void OnEnable()
-        {
+            positionNow.z = trans.position.z + Speed * Time.deltaTime;
+            trans.position = positionNow;
+        }
+
+
+        private void OnEnable() {
             inputAction.Enable();
         }
 
-        private void OnDisable()
-        {
+        private void OnDisable() {
             inputAction.Disable();
         }
 
         public void CollideWithObstacle() {
             OnCourseFinished?.Invoke();
             collided = true;
-            rb.velocity = new Vector3(0,0,0);
-            Scene scene = SceneManager.GetActiveScene();
+            rb.velocity = new Vector3(0, 0, 0);
+            var scene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(scene.name);
         }
     }
