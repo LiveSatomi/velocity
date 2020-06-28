@@ -1,6 +1,7 @@
 ﻿using System;
 using Controller;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Ship
 {
@@ -30,6 +31,8 @@ namespace Ship
         
         private Animator animator;
 
+        private static readonly int AnimatorChangeDirection = Animator.StringToHash("changeDirection");
+
         void Awake()
         {
             inputAction = new ShipInputAction();
@@ -51,25 +54,20 @@ namespace Ship
         void Update()
         {
             if (!collided) {
-                animator.SetFloat("changeDirection", InputDirection);
+                animator.SetFloat(AnimatorChangeDirection, InputDirection);
                 Speed = timeController.CurrentMinSpeed() + speedBoost;
+                var trans = transform;
+                var positionNow = trans.position;
                 if (Math.Abs(ChangeDirection) > .01)
                 {
-                    var trans = transform;
-                    var positionNow = trans.position;
                     positionNow.x = changeProgress * ChangeDirection * laneWidth + ChangeStartPosition;
-                    trans.position = positionNow;
                 }
+
+                positionNow.z = trans.position.z + Speed * Time.deltaTime;
+                trans.position = positionNow;
             }
         }
 
-        void FixedUpdate()
-        {
-            if (!collided) {
-                rb.velocity = new Vector3(0, 0, Speed);
-            }
-            
-        }
 
         private void OnEnable()
         {
@@ -85,6 +83,8 @@ namespace Ship
             OnCourseFinished?.Invoke();
             collided = true;
             rb.velocity = new Vector3(0,0,0);
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.name);
         }
     }
 }

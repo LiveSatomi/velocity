@@ -875,10 +875,19 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 308159208, guid: cb45ce4264deef23aa832707475e716c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2441836047272368782, guid: cb45ce4264deef23aa832707475e716c,
         type: 3}
       propertyPath: m_Name
       value: Ship
+      objectReference: {fileID: 0}
+    - target: {fileID: 2441836047272368782, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
         type: 3}
