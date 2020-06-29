@@ -1,5 +1,6 @@
 ﻿using System;
 using Controller;
+using Track;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,9 +9,19 @@ namespace Ship {
         public delegate void CourseFinishedEvent();
 
         /// <summary>
-        ///     Cached animator parameter.
+        ///     Cached animator parameter. Indicates the direction of the current lane change.
         /// </summary>
         private static readonly int AnimatorChangeDirection = Animator.StringToHash("changeDirection");
+
+        /// <summary>
+        ///     Cached animator parameter. Indicates if the ship is in a boost zone.
+        /// </summary>
+        private static readonly int AnimatorBoost = Animator.StringToHash("boost");
+
+        /// <summary>
+        ///     Cached animator parameter. Indicates if the ship is in a turbo zone.
+        /// </summary>
+        private static readonly int AnimatorTurbo = Animator.StringToHash("turbo");
 
         /// <summary>
         ///     Speed boost based on performance. Decays to 0 over time.
@@ -72,7 +83,7 @@ namespace Ship {
 
         public static event CourseFinishedEvent OnCourseFinished;
 
-        void Awake() {
+        private void Awake() {
             inputAction = new ShipInputAction();
             inputAction.ShipControls.ChangeLane.performed += ctx => {
                 InputDirection = Math.Sign(ctx.ReadValue<float>());
@@ -80,20 +91,20 @@ namespace Ship {
         }
 
         // Start is called before the first frame update
-        void Start() {
+        private void Start() {
             rb = GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
         }
 
         // Update is called once per frame
-        void Update() {
+        private void Update() {
             if (!collided) {
                 animator.SetFloat(AnimatorChangeDirection, InputDirection);
                 Speed = timeController.CurrentMinSpeed() + speedBoost;
             }
         }
 
-        void FixedUpdate() {
+        private void FixedUpdate() {
             var trans = transform;
             var positionNow = trans.position;
             if (Math.Abs(ChangeDirection) > .01)
@@ -104,15 +115,36 @@ namespace Ship {
         }
 
 
-        void OnEnable() {
+        private void OnEnable() {
             inputAction.Enable();
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             inputAction.Disable();
         }
 
-        public void CollideWithObstacle() {
+        public void OnTriggerEnter(Collider other) {
+            var obstacle = other.GetComponent<Obstacle>();
+            if (obstacle != null) {
+                if (obstacle.IsBoostCollider(other))
+                    animator.SetBool(AnimatorBoost, true);
+                else if (obstacle.IsTurboCollider(other))
+                    animator.SetBool(AnimatorTurbo, true);
+                else
+                    CollideWithObstacle(obstacle);
+            }
+        }
+
+        public void OnTriggerExit(Collider other) {
+            var obstacle = other.GetComponent<Obstacle>();
+            if (obstacle != null) {
+                if (obstacle.IsBoostCollider(other))
+                    animator.SetBool(AnimatorBoost, false);
+                else if (obstacle.IsTurboCollider(other)) animator.SetBool(AnimatorTurbo, false);
+            }
+        }
+
+        private void CollideWithObstacle(Obstacle obstacle) {
             OnCourseFinished?.Invoke();
             collided = true;
             rb.velocity = new Vector3(0, 0, 0);

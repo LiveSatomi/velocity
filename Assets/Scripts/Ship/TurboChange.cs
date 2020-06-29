@@ -2,10 +2,10 @@
 
 namespace Ship {
     /// <summary>
-    ///     NormalChange occurs when the ship is not close to any obstacles. Relatively, it starts slowly and takes a long time
+    ///     TurboChange occurs when the ship is extremely close to an obstacle. Relatively, it is fast and takes a short time
     ///     to complete.
     /// </summary>
-    public class NormalChange : StateMachineBehaviour {
+    public class TurboChange : StateMachineBehaviour {
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
             shipDriver.ChangeDirection = shipDriver.InputDirection;

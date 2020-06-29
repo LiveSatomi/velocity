@@ -2,10 +2,10 @@
 
 namespace Ship {
     /// <summary>
-    ///     NormalChange occurs when the ship is not close to any obstacles. Relatively, it starts slowly and takes a long time
-    ///     to complete.
+    ///     BoostChange occurs when the ship is moderately close to an obstacle. Relatively, it is moderate speed and takes a
+    ///     moderate time to complete.
     /// </summary>
-    public class NormalChange : StateMachineBehaviour {
+    public class BoostChange : StateMachineBehaviour {
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
             shipDriver.ChangeDirection = shipDriver.InputDirection;
