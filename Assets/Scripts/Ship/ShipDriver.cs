@@ -26,7 +26,13 @@ namespace Ship {
         /// <summary>
         ///     Speed boost based on performance. Decays to 0 over time.
         /// </summary>
-        private readonly float speedBoost = 1;
+        private float speedBoost;
+
+        /// <summary>
+        ///     Decay rate of speedBoost.
+        /// </summary>
+        [Range(0,1)]
+        public float decayRate;
 
         /// <summary>
         ///     Cached animator component.
@@ -36,6 +42,7 @@ namespace Ship {
         /// <summary>
         ///     Indicates the percentage of lane change animation completed. Controlled by animator.
         /// </summary>
+        [HideInInspector]
         public float changeProgress;
 
         /// <summary>
@@ -101,6 +108,7 @@ namespace Ship {
             if (!collided) {
                 animator.SetFloat(AnimatorChangeDirection, InputDirection);
                 Speed = timeController.CurrentMinSpeed() + speedBoost;
+                speedBoost = Math.Max(0, speedBoost - decayRate * Time.deltaTime);
             }
         }
 
@@ -150,6 +158,16 @@ namespace Ship {
             rb.velocity = new Vector3(0, 0, 0);
             var scene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(scene.name);
+        }
+
+        [SerializeField] private const float Turbo = 3f;
+        public void AddTurbo() {
+            speedBoost += Turbo;
+        }
+        
+        [SerializeField] private const float Boost = 1f;
+        public void AddBoost() {
+            speedBoost += Boost;
         }
     }
 }

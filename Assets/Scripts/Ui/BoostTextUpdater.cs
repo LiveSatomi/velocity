@@ -3,8 +3,7 @@ using TMPro;
 using UnityEngine;
 
 namespace Ui {
-    public class SpeedTextUpdater : MonoBehaviour {
-        private Rigidbody body;
+    public class BoostTextUpdater : MonoBehaviour {
 
         public ShipDriver ship;
 
@@ -12,13 +11,12 @@ namespace Ui {
 
         // Start is called before the first frame update
         private void Start() {
-            body = ship.GetComponent<Rigidbody>();
             text = GetComponent<TextMeshProUGUI>();
         }
 
         // Update is called once per frame
         private void Update() {
-            var speed = body.velocity.z;
+            var speed = ship.Speed;
             text.text = "Speed: " + speed.ToString("n1");
         }
     }

@@ -710,9 +710,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7ecee7041deee63b0cdea38a37cdd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sectionBuilder: {fileID: 1194197434}
-  obstaclePlacer: {fileID: 1194197436}
   lookAhead: 4
+  obstaclePlacer: {fileID: 1194197436}
+  sectionBuilder: {fileID: 1194197434}
 --- !u!114 &1194197434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -725,11 +725,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 705e1185507f4b8db5fb19cfa1773f27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  section: {fileID: 8120704476403734592, guid: ea518440a0f7205d0a2f327b8f94c42c, type: 3}
+  gutterWidth: 0.25
   lanes: 7
   laneWidth: 3
-  gutterWidth: 0.25
   length: 10
+  section: {fileID: 8120704476403734592, guid: ea518440a0f7205d0a2f327b8f94c42c, type: 3}
   thresholdDistance: 5
 --- !u!114 &1194197435
 MonoBehaviour:
@@ -898,6 +898,11 @@ PrefabInstance:
         type: 3}
       propertyPath: laneWidth
       value: 3.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: decayRate
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7993975454490733655, guid: cb45ce4264deef23aa832707475e716c,
         type: 3}

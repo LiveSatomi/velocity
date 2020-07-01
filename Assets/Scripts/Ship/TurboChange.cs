@@ -8,19 +8,13 @@ namespace Ship {
     public class TurboChange : StateMachineBehaviour {
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
-            shipDriver.ChangeDirection = shipDriver.InputDirection;
-            shipDriver.ChangeStartPosition = shipDriver.transform.position.x;
+            LaneChangeUtil.StartChange(shipDriver);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             var shipDriver = animator.gameObject.GetComponent<ShipDriver>();
-            var transform = shipDriver.transform;
-
-            var pos = transform.position;
-            pos.x = shipDriver.ChangeStartPosition + shipDriver.laneWidth * shipDriver.ChangeDirection;
-            transform.position = pos;
-
-            shipDriver.ChangeDirection = 0;
+            shipDriver.AddTurbo();
+            LaneChangeUtil.EndChange(shipDriver);
         }
     }
 }
