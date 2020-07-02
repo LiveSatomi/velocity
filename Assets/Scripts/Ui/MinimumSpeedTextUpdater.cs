@@ -1,6 +1,7 @@
 ﻿#region
 
 using Controller;
+using Ship;
 using TMPro;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ namespace Ui {
 
         public TimeController timeController;
 
+        public ShipDriver shipDriver;
+
         // Start is called before the first frame update
         private void Start() {
             text = GetComponent<TextMeshProUGUI>();
@@ -19,7 +22,7 @@ namespace Ui {
 
         // Update is called once per frame
         private void Update() {
-            var currentMinSpeed = timeController.CurrentMinSpeed();
+            var currentMinSpeed = shipDriver.BaseSpeed;
             text.text = "Minimum: " + currentMinSpeed.ToString("n1");
         }
     }

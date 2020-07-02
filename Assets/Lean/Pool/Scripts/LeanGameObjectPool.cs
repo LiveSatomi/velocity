@@ -1,14 +1,10 @@
-﻿#region
-
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using Lean.Common;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
-
-#endregion
 
 namespace Lean.Pool {
     [CanEditMultipleObjects]

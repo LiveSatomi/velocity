@@ -1,12 +1,7 @@
-﻿#region
-
-using System;
-using Controller;
+﻿using System;
 using Track;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-#endregion
 
 namespace Ship {
     public class ShipDriver : MonoBehaviour {
@@ -27,6 +22,49 @@ namespace Ship {
         /// </summary>
         private static readonly int AnimatorTurbo = Animator.StringToHash("turbo");
 
+
+        /// <summary>
+        ///     Current forward velocity.
+        /// </summary>
+        public float Speed { get; private set; }
+
+        [SerializeField] private float initialSpeed = 3;
+
+        /// <summary>
+        ///     Minimum speed at any given time. It increases monotonically from initialSpeed over time.
+        /// </summary>
+        public float BaseSpeed { get; private set; }
+
+        /// <summary>
+        ///     The forward speed increase awarded at the end of a boost change
+        /// </summary>
+        [SerializeField] private float boost = 1f;
+
+        /// <summary>
+        ///     The forward speed increase awarded at the end of a turbo change.
+        /// </summary>
+        [SerializeField] private float turbo = 2f;
+
+        /// <summary>
+        ///     Speed boost based on performance. Decays to 0 over time.
+        /// </summary>
+        private float speedBoost;
+
+        /// <summary>
+        ///     Percentage of Speed that becomes the new baseSpeed.
+        /// </summary>
+        [Range(0, 1)] [SerializeField] private float chargePercentage = 0.3f;
+
+        /// <summary>
+        ///     Decay rate of speedBoost.
+        /// </summary>
+        [Range(0, 1)] [SerializeField] private float decayRate = 0.3f;
+
+        /// <summary>
+        ///     State that represents if the ship has collided with an obstacle.
+        /// </summary>
+        private bool collided;
+
         /// <summary>
         ///     Cached animator component.
         /// </summary>
@@ -38,48 +76,6 @@ namespace Ship {
         /// </summary>
         [HideInInspector] public float changeProgress;
 
-        /// <summary>
-        ///     State that represents if the ship has collided with an obstacle.
-        /// </summary>
-        private bool collided;
-
-        /// <summary>
-        ///     Decay rate of speedBoost.
-        /// </summary>
-        [Range(0, 1)] public float decayRate;
-
-        /// <summary>
-        ///     Unity InputAction that controls the ship.
-        /// </summary>
-        private ShipInputAction inputAction;
-
-        // TODO Initialize this from TrackBuilder or elsewhere
-        public float laneWidth = 2;
-
-        /// <summary>
-        ///     Cached rigidbody component.
-        /// </summary>
-        private Rigidbody rb;
-
-        /// <summary>
-        ///     Speed boost based on performance. Decays to 0 over time.
-        /// </summary>
-        private float speedBoost;
-
-        /// <summary>
-        ///     Authority for elapsed time.
-        /// </summary>
-        public TimeController timeController;
-
-        [SerializeField] private float turbo = 3f;
-
-        [SerializeField] private float boost = 1f;
-
-
-        /// <summary>
-        ///     State tied to the desired direction to change lanes.
-        /// </summary>
-        public float InputDirection { get; private set; }
 
         /// <summary>
         ///     State that represents the direction of the lane change being executed.
@@ -92,13 +88,22 @@ namespace Ship {
         public float ChangeStartPosition { get; set; }
 
         /// <summary>
-        ///     Current forward velocity.
+        ///     Unity InputAction that controls the ship.
         /// </summary>
-        public float Speed { get; private set; }
+        private ShipInputAction inputAction;
+
+        /// <summary>
+        ///     State tied to the an input representing the desired direction to change lanes.
+        /// </summary>
+        public float InputDirection { get; private set; }
+
+        // TODO Initialize this from TrackBuilder or elsewhere
+        public float laneWidth = 2;
 
         public static event CourseFinishedEvent OnCourseFinished;
 
         private void Awake() {
+            BaseSpeed = initialSpeed;
             inputAction = new ShipInputAction();
             inputAction.ShipControls.ChangeLane.performed += ctx => {
                 InputDirection = Math.Sign(ctx.ReadValue<float>());
@@ -107,7 +112,6 @@ namespace Ship {
 
         // Start is called before the first frame update
         private void Start() {
-            rb = GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
         }
 
@@ -115,8 +119,9 @@ namespace Ship {
         private void Update() {
             if (!collided) {
                 animator.SetFloat(AnimatorChangeDirection, InputDirection);
-                Speed = timeController.CurrentMinSpeed() + speedBoost;
+                Speed = BaseSpeed + speedBoost;
                 speedBoost = Math.Max(0, speedBoost - decayRate * Time.deltaTime);
+                BaseSpeed = Math.Max(BaseSpeed, Speed * chargePercentage);
             }
         }
 
@@ -167,7 +172,6 @@ namespace Ship {
         private void CollideWithObstacle(Obstacle obstacle) {
             OnCourseFinished?.Invoke();
             collided = true;
-            rb.velocity = new Vector3(0, 0, 0);
             var scene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(scene.name);
         }
