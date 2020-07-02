@@ -1,8 +1,12 @@
-﻿using System;
+﻿#region
+
+using System;
 using Controller;
 using Track;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+#endregion
 
 namespace Ship {
     public class ShipDriver : MonoBehaviour {
@@ -24,31 +28,25 @@ namespace Ship {
         private static readonly int AnimatorTurbo = Animator.StringToHash("turbo");
 
         /// <summary>
-        ///     Speed boost based on performance. Decays to 0 over time.
-        /// </summary>
-        private float speedBoost;
-
-        /// <summary>
-        ///     Decay rate of speedBoost.
-        /// </summary>
-        [Range(0,1)]
-        public float decayRate;
-
-        /// <summary>
         ///     Cached animator component.
         /// </summary>
         private Animator animator;
 
+
         /// <summary>
         ///     Indicates the percentage of lane change animation completed. Controlled by animator.
         /// </summary>
-        [HideInInspector]
-        public float changeProgress;
+        [HideInInspector] public float changeProgress;
 
         /// <summary>
         ///     State that represents if the ship has collided with an obstacle.
         /// </summary>
         private bool collided;
+
+        /// <summary>
+        ///     Decay rate of speedBoost.
+        /// </summary>
+        [Range(0, 1)] public float decayRate;
 
         /// <summary>
         ///     Unity InputAction that controls the ship.
@@ -64,9 +62,19 @@ namespace Ship {
         private Rigidbody rb;
 
         /// <summary>
+        ///     Speed boost based on performance. Decays to 0 over time.
+        /// </summary>
+        private float speedBoost;
+
+        /// <summary>
         ///     Authority for elapsed time.
         /// </summary>
         public TimeController timeController;
+
+        [SerializeField] private float turbo = 3f;
+
+        [SerializeField] private float boost = 1f;
+
 
         /// <summary>
         ///     State tied to the desired direction to change lanes.
@@ -115,8 +123,9 @@ namespace Ship {
         private void FixedUpdate() {
             var trans = transform;
             var positionNow = trans.position;
-            if (Math.Abs(ChangeDirection) > .01)
+            if (Math.Abs(ChangeDirection) > .01) {
                 positionNow.x = changeProgress * ChangeDirection * laneWidth + ChangeStartPosition;
+            }
 
             positionNow.z = trans.position.z + Speed * Time.deltaTime;
             trans.position = positionNow;
@@ -134,21 +143,24 @@ namespace Ship {
         public void OnTriggerEnter(Collider other) {
             var obstacle = other.GetComponent<Obstacle>();
             if (obstacle != null) {
-                if (obstacle.IsBoostCollider(other))
+                if (obstacle.IsBoostCollider(other)) {
                     animator.SetBool(AnimatorBoost, true);
-                else if (obstacle.IsTurboCollider(other))
+                } else if (obstacle.IsTurboCollider(other)) {
                     animator.SetBool(AnimatorTurbo, true);
-                else
+                } else {
                     CollideWithObstacle(obstacle);
+                }
             }
         }
 
         public void OnTriggerExit(Collider other) {
             var obstacle = other.GetComponent<Obstacle>();
             if (obstacle != null) {
-                if (obstacle.IsBoostCollider(other))
+                if (obstacle.IsBoostCollider(other)) {
                     animator.SetBool(AnimatorBoost, false);
-                else if (obstacle.IsTurboCollider(other)) animator.SetBool(AnimatorTurbo, false);
+                } else if (obstacle.IsTurboCollider(other)) {
+                    animator.SetBool(AnimatorTurbo, false);
+                }
             }
         }
 
@@ -160,14 +172,12 @@ namespace Ship {
             SceneManager.LoadScene(scene.name);
         }
 
-        [SerializeField] private const float Turbo = 3f;
         public void AddTurbo() {
-            speedBoost += Turbo;
+            speedBoost += turbo;
         }
-        
-        [SerializeField] private const float Boost = 1f;
+
         public void AddBoost() {
-            speedBoost += Boost;
+            speedBoost += boost;
         }
     }
 }

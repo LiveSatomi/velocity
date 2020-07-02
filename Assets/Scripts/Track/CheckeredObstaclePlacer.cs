@@ -1,5 +1,9 @@
+#region
+
 using Lean.Pool;
 using UnityEngine;
+
+#endregion
 
 namespace Track {
     public class CheckeredObstaclePlacer : ObstaclePlacer {
@@ -12,7 +16,9 @@ namespace Track {
             var position = new Vector3(0, .5f, 0);
             for (var i = 0; i < lanes.Count; i++) {
                 var lane = lanes[i];
-                if (i % 2 == (adjusted ? 1 : 0)) LeanPool.Spawn(obstacle, position, Quaternion.identity, lane, false);
+                if (i % 2 == (adjusted ? 1 : 0)) {
+                    LeanPool.Spawn(obstacle, position, Quaternion.identity, lane, false);
+                }
             }
 
             adjusted = !adjusted;

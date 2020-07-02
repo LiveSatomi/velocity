@@ -1,16 +1,27 @@
 // GENERATED AUTOMATICALLY FROM 'Assets/Input/ShipInputAction.inputactions'
 
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
+using Object = UnityEngine.Object;
 
-public class @ShipInputAction : IInputActionCollection, IDisposable
-{
+#endregion
+
+public class @ShipInputAction : IInputActionCollection, IDisposable {
     private InputActionAsset asset;
-    public @ShipInputAction()
-    {
+
+    // ShipControls
+    private readonly InputActionMap m_ShipControls;
+
+    private IShipControlsActions m_ShipControlsActionsCallbackInterface;
+
+    private readonly InputAction m_ShipControls_ChangeLane;
+
+    public @ShipInputAction() {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""ShipInputAction"",
     ""maps"": [
@@ -67,88 +78,92 @@ public class @ShipInputAction : IInputActionCollection, IDisposable
     ""controlSchemes"": []
 }");
         // ShipControls
-        m_ShipControls = asset.FindActionMap("ShipControls", throwIfNotFound: true);
-        m_ShipControls_ChangeLane = m_ShipControls.FindAction("ChangeLane", throwIfNotFound: true);
+        m_ShipControls = asset.FindActionMap("ShipControls", true);
+        m_ShipControls_ChangeLane = m_ShipControls.FindAction("ChangeLane", true);
     }
 
-    public void Dispose()
-    {
-        UnityEngine.Object.Destroy(asset);
+    public ShipControlsActions @ShipControls => new ShipControlsActions(this);
+
+    public void Dispose() {
+        Object.Destroy(asset);
     }
 
-    public InputBinding? bindingMask
-    {
+    public InputBinding? bindingMask {
         get => asset.bindingMask;
         set => asset.bindingMask = value;
     }
 
-    public ReadOnlyArray<InputDevice>? devices
-    {
+    public ReadOnlyArray<InputDevice>? devices {
         get => asset.devices;
         set => asset.devices = value;
     }
 
     public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
 
-    public bool Contains(InputAction action)
-    {
+    public bool Contains(InputAction action) {
         return asset.Contains(action);
     }
 
-    public IEnumerator<InputAction> GetEnumerator()
-    {
+    public IEnumerator<InputAction> GetEnumerator() {
         return asset.GetEnumerator();
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
+    IEnumerator IEnumerable.GetEnumerator() {
         return GetEnumerator();
     }
 
-    public void Enable()
-    {
+    public void Enable() {
         asset.Enable();
     }
 
-    public void Disable()
-    {
+    public void Disable() {
         asset.Disable();
     }
 
-    // ShipControls
-    private readonly InputActionMap m_ShipControls;
-    private IShipControlsActions m_ShipControlsActionsCallbackInterface;
-    private readonly InputAction m_ShipControls_ChangeLane;
-    public struct ShipControlsActions
-    {
+    public struct ShipControlsActions {
         private @ShipInputAction m_Wrapper;
-        public ShipControlsActions(@ShipInputAction wrapper) { m_Wrapper = wrapper; }
+
+        public ShipControlsActions(@ShipInputAction wrapper) {
+            m_Wrapper = wrapper;
+        }
+
         public InputAction @ChangeLane => m_Wrapper.m_ShipControls_ChangeLane;
-        public InputActionMap Get() { return m_Wrapper.m_ShipControls; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
+
+        public InputActionMap Get() {
+            return m_Wrapper.m_ShipControls;
+        }
+
+        public void Enable() {
+            Get().Enable();
+        }
+
+        public void Disable() {
+            Get().Disable();
+        }
+
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(ShipControlsActions set) { return set.Get(); }
-        public void SetCallbacks(IShipControlsActions instance)
-        {
-            if (m_Wrapper.m_ShipControlsActionsCallbackInterface != null)
-            {
+
+        public static implicit operator InputActionMap(ShipControlsActions set) {
+            return set.Get();
+        }
+
+        public void SetCallbacks(IShipControlsActions instance) {
+            if (m_Wrapper.m_ShipControlsActionsCallbackInterface != null) {
                 @ChangeLane.started -= m_Wrapper.m_ShipControlsActionsCallbackInterface.OnChangeLane;
                 @ChangeLane.performed -= m_Wrapper.m_ShipControlsActionsCallbackInterface.OnChangeLane;
                 @ChangeLane.canceled -= m_Wrapper.m_ShipControlsActionsCallbackInterface.OnChangeLane;
             }
+
             m_Wrapper.m_ShipControlsActionsCallbackInterface = instance;
-            if (instance != null)
-            {
+            if (instance != null) {
                 @ChangeLane.started += instance.OnChangeLane;
                 @ChangeLane.performed += instance.OnChangeLane;
                 @ChangeLane.canceled += instance.OnChangeLane;
             }
         }
     }
-    public ShipControlsActions @ShipControls => new ShipControlsActions(this);
-    public interface IShipControlsActions
-    {
+
+    public interface IShipControlsActions {
         void OnChangeLane(InputAction.CallbackContext context);
     }
 }

@@ -1,13 +1,15 @@
+#region
+
 using UnityEngine;
 using Utility;
 
-namespace Track
-{
+#endregion
+
+namespace Track {
     ///
     /// Builds the mesh for a TrackSection. Pivot is in the midpoint of the plane.
     ///
-    public class SectionBuilder: MonoBehaviour
-    {
+    public class SectionBuilder : MonoBehaviour {
         ///
         /// Size of the space between the lanes.
         ///
@@ -39,8 +41,7 @@ namespace Track
         ///
         /// Generates a TrackSection made out of LaneSections and GutterSections.
         ///
-        public TrackSection BuildSection()
-        {
+        public TrackSection BuildSection() {
             var trackSection = Instantiate(section);
             trackSection.name = "Section";
             trackSection.gameObject.SetActive(false);
@@ -60,12 +61,11 @@ namespace Track
             threshold.transform.localPosition = new Vector3(0, 0, -length / 2f - thresholdDistance);
 
 
-            for (var i = -lanes; i < lanes; i++)
-            {
+            for (var i = -lanes; i < lanes; i++) {
                 var offset = i * (laneWidth + gutterWidth);
                 var laneSection = CreateSectionMesh("LaneSection", offset, laneWidth, section.laneMaterial);
                 offset = i * (laneWidth + gutterWidth) + (laneWidth + gutterWidth) / 2.0f;
-                var gutterSection = CreateSectionMesh( "GutterSection", offset, gutterWidth,  section.gutterMaterial);
+                var gutterSection = CreateSectionMesh("GutterSection", offset, gutterWidth, section.gutterMaterial);
                 laneSection.transform.parent = trans.Find("Lanes").transform;
                 gutterSection.transform.parent = trans.Find("Gutters").transform;
             }
@@ -78,12 +78,12 @@ namespace Track
         ///
         /// Instantiates a Section.
         ///
-        private GameObject CreateSectionMesh(string id, float offset, float width, Material material)
-        {
+        private GameObject CreateSectionMesh(string id, float offset, float width, Material material) {
             var laneSection = new GameObject(id);
             laneSection.transform.position = new Vector3(offset, 0, 0);
 
-            var sectionMesh = MeshCreator.CreatePlane("GeneratedPlane", 1, 2, width, length, Orientation.Horizontal, false);
+            var sectionMesh =
+                MeshCreator.CreatePlane("GeneratedPlane", 1, 2, width, length, Orientation.Horizontal, false);
 
             var sectionFilter = laneSection.gameObject.AddComponent<MeshFilter>();
             sectionFilter.sharedMesh = sectionMesh;

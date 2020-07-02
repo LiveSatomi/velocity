@@ -1,4 +1,8 @@
+#region
+
 using UnityEngine;
+
+#endregion
 
 namespace Utility {
     public enum Orientation {
@@ -14,7 +18,10 @@ namespace Utility {
             var hCount2 = widthSegments + 1;
             var vCount2 = lengthSegments + 1;
             var numTriangles = widthSegments * lengthSegments * 6;
-            if (twoSided) numTriangles *= 2;
+            if (twoSided) {
+                numTriangles *= 2;
+            }
+
             var numVertices = hCount2 * vCount2;
 
             var vertices = new Vector3[numVertices];
@@ -30,10 +37,12 @@ namespace Utility {
             var scaleY = length / lengthSegments;
             for (var y = 0.0f; y < vCount2; y++)
             for (var x = 0.0f; x < hCount2; x++) {
-                if (orientation == Orientation.Horizontal)
+                if (orientation == Orientation.Horizontal) {
                     vertices[index] = new Vector3(x * scaleX - width / 2f, 0.0f, y * scaleY - length / 2f);
-                else if (orientation == Orientation.Vertical)
+                } else if (orientation == Orientation.Vertical) {
                     vertices[index] = new Vector3(x * scaleX - width / 2f, y * scaleY - length / 2f, 0.0f);
+                }
+
                 tangents[index] = tangent;
                 uvs[index++] = new Vector2(x * uvFactorX, y * uvFactorY);
             }
@@ -52,6 +61,7 @@ namespace Utility {
                 }
 
                 if (twoSided) // Same tri vertices with order reversed, so normals point in the opposite direction
+                {
                     for (var x = 0; x < widthSegments; x++) {
                         triangles[index] = y * hCount2 + x;
                         triangles[index + 1] = y * hCount2 + x + 1;
@@ -62,6 +72,7 @@ namespace Utility {
                         triangles[index + 5] = (y + 1) * hCount2 + x + 1;
                         index += 6;
                     }
+                }
             }
 
             m.vertices = vertices;

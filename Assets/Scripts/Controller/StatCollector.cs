@@ -1,5 +1,9 @@
+#region
+
 using Ship;
 using UnityEngine;
+
+#endregion
 
 namespace Controller {
     /// <summary>

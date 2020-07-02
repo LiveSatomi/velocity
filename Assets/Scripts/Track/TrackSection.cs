@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
 using Lean.Pool;
 using Ship;
 using UnityEngine;
+
+#endregion
 
 namespace Track {
     public class TrackSection : MonoBehaviour, IPoolable {
@@ -37,7 +41,9 @@ namespace Track {
             thresholdPassed = false;
             foreach (var lane in GetLanes()) {
                 var obstacles = lane.GetComponentsInChildren<Obstacle>();
-                foreach (var obstacle in obstacles) track.obstaclePlacer.DespawnObstacle(obstacle);
+                foreach (var obstacle in obstacles) {
+                    track.obstaclePlacer.DespawnObstacle(obstacle);
+                }
             }
         }
 

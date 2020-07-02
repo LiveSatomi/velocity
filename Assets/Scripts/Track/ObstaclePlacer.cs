@@ -1,5 +1,9 @@
+#region
+
 using Lean.Pool;
 using UnityEngine;
+
+#endregion
 
 namespace Track {
     public abstract class ObstaclePlacer : MonoBehaviour {

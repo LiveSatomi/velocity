@@ -1,10 +1,13 @@
-﻿using Ship;
+﻿#region
+
+using Ship;
 using TMPro;
 using UnityEngine;
 
+#endregion
+
 namespace Ui {
     public class BoostTextUpdater : MonoBehaviour {
-
         public ShipDriver ship;
 
         private TextMeshProUGUI text;

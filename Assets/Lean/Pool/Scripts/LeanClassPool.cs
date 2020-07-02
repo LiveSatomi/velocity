@@ -1,143 +1,144 @@
-﻿using System.Collections.Generic;
+﻿#region
 
-namespace Lean.Pool
-{
-	/// <summary>This class allows you to pool normal C# classes, for example:
-	/// var foo = Lean.Pool.LeanClassPool<Foo>.Spawn() ?? new Foo();
-	/// Lean.Pool.LeanClassPool<Foo>.Despawn(foo);</summary>
-	public static class LeanClassPool<T>
-		where T : class
-	{
-		// Store cache of all despanwed classes here, in a list so we can search it
-		private static List<T> cache = new List<T>();
+using System;
+using System.Collections.Generic;
 
-		// This will either return a pooled class instance, or null
-		public static T Spawn()
-		{
-			var count = cache.Count;
+#endregion
 
-			if (count > 0)
-			{
-				var index    = count - 1;
-				var instance = cache[index];
+namespace Lean.Pool {
+    /// <summary>
+    ///     This class allows you to pool normal C# classes, for example:
+    ///     var foo = Lean.Pool.LeanClassPool
+    ///     <Foo>
+    ///         .Spawn() ?? new Foo();
+    ///         Lean.Pool.LeanClassPool<Foo>.Despawn(foo);
+    /// </summary>
+    public static class LeanClassPool<T>
+        where T : class {
+        // Store cache of all despanwed classes here, in a list so we can search it
+        private static List<T> cache = new List<T>();
 
-				cache.RemoveAt(index);
+        // This will either return a pooled class instance, or null
+        public static T Spawn() {
+            var count = cache.Count;
 
-				return instance;
-			}
+            if (count > 0) {
+                var index = count - 1;
+                var instance = cache[index];
 
-			return null;
-		}
+                cache.RemoveAt(index);
 
-		/// <summary>This will either return a pooled class instance, or null. If an instance it found, onSpawn will be called with it. NOTE: onSpawn is expected to not be null.</summary>
-		public static T Spawn(System.Action<T> onSpawn)
-		{
-			var instance = default(T);
+                return instance;
+            }
 
-			TrySpawn(onSpawn, ref instance);
+            return null;
+        }
 
-			return instance;
-		}
+        /// <summary>
+        ///     This will either return a pooled class instance, or null. If an instance it found, onSpawn will be called with
+        ///     it. NOTE: onSpawn is expected to not be null.
+        /// </summary>
+        public static T Spawn(Action<T> onSpawn) {
+            var instance = default(T);
 
-		public static bool TrySpawn(System.Action<T> onSpawn, ref T instance)
-		{
-			var count = cache.Count;
+            TrySpawn(onSpawn, ref instance);
 
-			if (count > 0)
-			{
-				var index = count - 1;
+            return instance;
+        }
 
-				instance = cache[index];
+        public static bool TrySpawn(Action<T> onSpawn, ref T instance) {
+            var count = cache.Count;
 
-				cache.RemoveAt(index);
+            if (count > 0) {
+                var index = count - 1;
 
-				onSpawn(instance);
+                instance = cache[index];
 
-				return true;
-			}
+                cache.RemoveAt(index);
 
-			return false;
-		}
+                onSpawn(instance);
 
-		/// <summary>This will either return a pooled class instance, or null.
-		/// All pooled classes will be checked with match to see if they qualify.
-		/// NOTE: match is expected to not be null.</summary>
-		public static T Spawn(System.Predicate<T> match)
-		{
-			var instance = default(T);
+                return true;
+            }
 
-			TrySpawn(match, ref instance);
+            return false;
+        }
 
-			return instance;
-		}
+        /// <summary>
+        ///     This will either return a pooled class instance, or null.
+        ///     All pooled classes will be checked with match to see if they qualify.
+        ///     NOTE: match is expected to not be null.
+        /// </summary>
+        public static T Spawn(Predicate<T> match) {
+            var instance = default(T);
 
-		public static bool TrySpawn(System.Predicate<T> match, ref T instance)
-		{
-			var index = cache.FindIndex(match);
+            TrySpawn(match, ref instance);
 
-			if (index >= 0)
-			{
-				instance = cache[index];
+            return instance;
+        }
 
-				cache.RemoveAt(index);
+        public static bool TrySpawn(Predicate<T> match, ref T instance) {
+            var index = cache.FindIndex(match);
 
-				return true;
-			}
+            if (index >= 0) {
+                instance = cache[index];
 
-			return false;
-		}
+                cache.RemoveAt(index);
 
-		/// <summary>This will either return a pooled class instance, or null.
-		/// All pooled classes will be checked with match to see if they qualify.
-		/// If an instance it found, onSpawn will be called with it.
-		/// NOTE: match is expected to not be null.
-		/// NOTE: onSpawn is expected to not be null.</summary>
-		public static T Spawn(System.Predicate<T> match, System.Action<T> onSpawn)
-		{
-			var instance = default(T);
+                return true;
+            }
 
-			TrySpawn(match, onSpawn, ref instance);
+            return false;
+        }
 
-			return instance;
-		}
+        /// <summary>
+        ///     This will either return a pooled class instance, or null.
+        ///     All pooled classes will be checked with match to see if they qualify.
+        ///     If an instance it found, onSpawn will be called with it.
+        ///     NOTE: match is expected to not be null.
+        ///     NOTE: onSpawn is expected to not be null.
+        /// </summary>
+        public static T Spawn(Predicate<T> match, Action<T> onSpawn) {
+            var instance = default(T);
 
-		public static bool TrySpawn(System.Predicate<T> match, System.Action<T> onSpawn, ref T instance)
-		{
-			var index = cache.FindIndex(match);
+            TrySpawn(match, onSpawn, ref instance);
 
-			if (index >= 0)
-			{
-				instance = cache[index];
+            return instance;
+        }
 
-				cache.RemoveAt(index);
+        public static bool TrySpawn(Predicate<T> match, Action<T> onSpawn, ref T instance) {
+            var index = cache.FindIndex(match);
 
-				onSpawn(instance);
+            if (index >= 0) {
+                instance = cache[index];
 
-				return true;
-			}
+                cache.RemoveAt(index);
 
-			return false;
-		}
+                onSpawn(instance);
 
-		/// <summary>This will pool the passed class instance.</summary>
-		public static void Despawn(T instance)
-		{
-			if (instance != null)
-			{
-				cache.Add(instance);
-			}
-		}
+                return true;
+            }
 
-		/// <summary>This will pool the passed class instance.
-		/// If you need to perform despawning code then you can do that via onDespawn.</summary>
-		public static void Despawn(T instance, System.Action<T> onDespawn)
-		{
-			if (instance != null)
-			{
-				onDespawn(instance);
+            return false;
+        }
 
-				cache.Add(instance);
-			}
-		}
-	}
+        /// <summary>This will pool the passed class instance.</summary>
+        public static void Despawn(T instance) {
+            if (instance != null) {
+                cache.Add(instance);
+            }
+        }
+
+        /// <summary>
+        ///     This will pool the passed class instance.
+        ///     If you need to perform despawning code then you can do that via onDespawn.
+        /// </summary>
+        public static void Despawn(T instance, Action<T> onDespawn) {
+            if (instance != null) {
+                onDespawn(instance);
+
+                cache.Add(instance);
+            }
+        }
+    }
 }

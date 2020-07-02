@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Ship {
     public static class LaneChangeUtil {
         public static void StartChange(ShipDriver shipDriver) {

@@ -1,5 +1,9 @@
-﻿using Lean.Pool;
+﻿#region
+
+using Lean.Pool;
 using UnityEngine;
+
+#endregion
 
 namespace Track {
     public class TrackBuilder : MonoBehaviour {
@@ -21,7 +25,9 @@ namespace Track {
             trackSection = sectionBuilder.BuildSection();
             GetComponent<LeanGameObjectPool>().Prefab = trackSection.gameObject;
             lastSection = AddSection(transform);
-            for (var i = 1; i < lookAhead; i++) lastSection = AddSection(lastSection.EndPoint);
+            for (var i = 1; i < lookAhead; i++) {
+                lastSection = AddSection(lastSection.EndPoint);
+            }
         }
 
         public void AddSection() {

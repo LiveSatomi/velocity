@@ -1,6 +1,10 @@
-﻿using Controller;
+﻿#region
+
+using Controller;
 using TMPro;
 using UnityEngine;
+
+#endregion
 
 namespace Ui {
     public class MinimumSpeedTextUpdater : MonoBehaviour {
