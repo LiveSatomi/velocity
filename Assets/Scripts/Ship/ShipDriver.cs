@@ -8,6 +8,31 @@ namespace Ship {
         public delegate void CourseFinishedEvent();
 
         /// <summary>
+        ///     Number of frames the lane change animation takes.
+        /// </summary>
+        private const float ChangeFrames = 25f;
+
+        /// <summary>
+        ///     Number of frames the boost change animation takes.
+        /// </summary>
+        private const float BoostFrames = 17f;
+
+        /// <summary>
+        ///     Number of frames the turbo change animation takes.
+        /// </summary>
+        private const float TurboFrames = 9f;
+
+        /// <summary>
+        ///     A constant distance to subtract from lateral movement capabilities to combat rounding errors.
+        /// </summary>
+        private const float Fudge = .3f;
+
+        /// <summary>
+        ///     Percentage of progress a change is required to use to clear the obstacle.
+        /// </summary>
+        private const float PartialRequirement = .2f;
+
+        /// <summary>
         ///     Cached animator parameter. Indicates the direction of the current lane change.
         /// </summary>
         private static readonly int AnimatorChangeDirection = Animator.StringToHash("changeDirection");
@@ -22,6 +47,10 @@ namespace Ship {
         /// </summary>
         private static readonly int AnimatorTurbo = Animator.StringToHash("turbo");
 
+        /// <summary>
+        ///     Cached MeshRenderer component
+        /// </summary>
+        private MeshRenderer meshRenderer;
 
         /// <summary>
         ///     Current forward velocity.
@@ -66,16 +95,19 @@ namespace Ship {
         private bool collided;
 
         /// <summary>
+        ///     Transform of the bow of the ship, used to calculate time to collision with obstacles.
+        /// </summary>
+        private Transform front;
+
+        /// <summary>
         ///     Cached animator component.
         /// </summary>
         private Animator animator;
-
 
         /// <summary>
         ///     Indicates the percentage of lane change animation completed. Controlled by animator.
         /// </summary>
         [HideInInspector] public float changeProgress;
-
 
         /// <summary>
         ///     State that represents the direction of the lane change being executed.
@@ -97,22 +129,31 @@ namespace Ship {
         /// </summary>
         public float InputDirection { get; private set; }
 
+        /// <summary>
+        ///     Width of ship model's hitbox.
+        /// </summary>
+        private float shipWidth;
+
         // TODO Initialize this from TrackBuilder or elsewhere
         public float laneWidth = 2;
+
+        private float obstacleWidth = 1; // TODO set via event
 
         public static event CourseFinishedEvent OnCourseFinished;
 
         private void Awake() {
+            shipWidth = GetComponent<MeshRenderer>().bounds.size.x;
             BaseSpeed = initialSpeed;
             inputAction = new ShipInputAction();
             inputAction.ShipControls.ChangeLane.performed += ctx => {
                 InputDirection = Math.Sign(ctx.ReadValue<float>());
             };
-        }
-
-        // Start is called before the first frame update
-        private void Start() {
             animator = GetComponent<Animator>();
+            foreach (Transform trans in transform) {
+                if (trans.name == "Front") {
+                    front = trans;
+                }
+            }
         }
 
         // Update is called once per frame
@@ -125,7 +166,32 @@ namespace Ship {
             }
         }
 
+
         private void FixedUpdate() {
+            if (Physics.Raycast(front.position, Vector3.forward, out var hitInfo, float.PositiveInfinity,
+                1 << Obstacle.ObstacleLayer)) {
+                var collideDistance = hitInfo.distance;
+                var collideTime = collideDistance / Speed;
+                var distanceToClear = (shipWidth + obstacleWidth) / 2;
+
+                var changeCapability = 1 / ChangeFrames * (collideTime / Time.deltaTime) * laneWidth;
+                var boostCapability = 1 / BoostFrames * (collideTime / Time.deltaTime) * laneWidth;
+                var partialBoostDistance = 1 / BoostFrames * (PartialRequirement * BoostFrames) * laneWidth;
+                var partialTurboDistance = 1 / TurboFrames * (PartialRequirement * TurboFrames) * laneWidth;
+
+
+                if (boostCapability - Fudge < distanceToClear || partialTurboDistance > distanceToClear) {
+                    animator.SetBool(AnimatorBoost, false);
+                    animator.SetBool(AnimatorTurbo, true);
+                } else if (changeCapability - Fudge < distanceToClear || partialBoostDistance > distanceToClear) {
+                    animator.SetBool(AnimatorBoost, true);
+                    animator.SetBool(AnimatorTurbo, false);
+                } else {
+                    animator.SetBool(AnimatorBoost, false);
+                    animator.SetBool(AnimatorTurbo, false);
+                }
+            }
+
             var trans = transform;
             var positionNow = trans.position;
             if (Math.Abs(ChangeDirection) > .01) {
@@ -139,37 +205,26 @@ namespace Ship {
 
         private void OnEnable() {
             inputAction.Enable();
+            Obstacle.OnObstacleWidthSet += RegisterObstacleWidth;
         }
 
         private void OnDisable() {
             inputAction.Disable();
+            Obstacle.OnObstacleWidthSet -= RegisterObstacleWidth;
+        }
+
+        private void RegisterObstacleWidth(float width) {
+            obstacleWidth = width;
         }
 
         public void OnTriggerEnter(Collider other) {
             var obstacle = other.GetComponent<Obstacle>();
             if (obstacle != null) {
-                if (obstacle.IsBoostCollider(other)) {
-                    animator.SetBool(AnimatorBoost, true);
-                } else if (obstacle.IsTurboCollider(other)) {
-                    animator.SetBool(AnimatorTurbo, true);
-                } else {
-                    CollideWithObstacle(obstacle);
-                }
+                CollideWithObstacle();
             }
         }
 
-        public void OnTriggerExit(Collider other) {
-            var obstacle = other.GetComponent<Obstacle>();
-            if (obstacle != null) {
-                if (obstacle.IsBoostCollider(other)) {
-                    animator.SetBool(AnimatorBoost, false);
-                } else if (obstacle.IsTurboCollider(other)) {
-                    animator.SetBool(AnimatorTurbo, false);
-                }
-            }
-        }
-
-        private void CollideWithObstacle(Obstacle obstacle) {
+        private void CollideWithObstacle() {
             OnCourseFinished?.Invoke();
             collided = true;
             var scene = SceneManager.GetActiveScene();

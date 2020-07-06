@@ -1,17 +1,10 @@
-﻿#region
-
-using Controller;
-using Ship;
+﻿using Ship;
 using TMPro;
 using UnityEngine;
-
-#endregion
 
 namespace Ui {
     public class MinimumSpeedTextUpdater : MonoBehaviour {
         private TextMeshProUGUI text;
-
-        public TimeController timeController;
 
         public ShipDriver shipDriver;
 

@@ -395,7 +395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 269bb9aa8dbffce2cb2f4a03f7a8fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeController: {fileID: 1082212741}
+  shipDriver: {fileID: 281662521}
 --- !u!1 &943629019
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,6 +891,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
         type: 3}
+      propertyPath: laneChange2.m_Curve.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
       propertyPath: timeController
       value: 
       objectReference: {fileID: 1082212741}
@@ -903,6 +908,76 @@ PrefabInstance:
         type: 3}
       propertyPath: decayRate
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[0].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[0].outSlope
+      value: 3.5872416
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[0].tangentMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[1].time
+      value: .15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[1].value
+      value: .43257415
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[1].inSlope
+      value: 2.668199
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[1].outSlope
+      value: 2.668199
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[1].tangentMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[2].time
+      value: 0.41666666
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[2].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[2].inSlope
+      value: 0.08396926
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[2].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[2].tangentMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3343410318738516577, guid: cb45ce4264deef23aa832707475e716c,
+        type: 3}
+      propertyPath: laneChange2.m_Curve.Array.data[0].value
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7993975454490733655, guid: cb45ce4264deef23aa832707475e716c,
         type: 3}

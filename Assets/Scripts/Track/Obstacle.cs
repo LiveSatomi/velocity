@@ -1,15 +1,11 @@
-#region
-
 using Lean.Pool;
 using UnityEngine;
 
-#endregion
-
 namespace Track {
     public class Obstacle : MonoBehaviour, IPoolable {
-        public Collider boost;
+        public delegate void ObstacleWidthSetEvent(float width);
 
-        public Collider turbo;
+        public const int ObstacleLayer = 8;
 
         public void OnSpawn() {
         }
@@ -17,12 +13,10 @@ namespace Track {
         public void OnDespawn() {
         }
 
-        public bool IsBoostCollider(Collider col) {
-            return col == boost;
-        }
+        public static event ObstacleWidthSetEvent OnObstacleWidthSet;
 
-        public bool IsTurboCollider(Collider col) {
-            return col == turbo;
+        public void Awake() {
+            OnObstacleWidthSet?.Invoke(GetComponent<MeshRenderer>().bounds.size.x);
         }
     }
 }
