@@ -620,6 +620,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1121464300}
   - component: {fileID: 1121464299}
+  - component: {fileID: 1121464301}
   m_Layer: 0
   m_Name: ObstaclePool
   m_TagString: Untagged
@@ -664,6 +665,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1121464301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121464298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ab70fa91e1149959c3002a29c45ef33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacle: {fileID: 2211448115753183651, guid: ec466ac541701600a94e3378d6c6b3ad,
+    type: 3}
+  existenceProbability: 1
 --- !u!1 &1194197431
 GameObject:
   m_ObjectHideFlags: 0
@@ -676,7 +692,6 @@ GameObject:
   - component: {fileID: 1194197433}
   - component: {fileID: 1194197434}
   - component: {fileID: 1194197435}
-  - component: {fileID: 1194197436}
   m_Layer: 0
   m_Name: Track
   m_TagString: Track
@@ -710,8 +725,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7ecee7041deee63b0cdea38a37cdd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookAhead: 4
-  obstaclePlacer: {fileID: 1194197436}
+  lookAhead: 11
+  obstaclePlacer: {fileID: 1121464301}
   sectionBuilder: {fileID: 1194197434}
 --- !u!114 &1194197434
 MonoBehaviour:
@@ -728,9 +743,9 @@ MonoBehaviour:
   gutterWidth: 0.25
   lanes: 7
   laneWidth: 3
-  length: 10
+  laneLength: 2
   section: {fileID: 8120704476403734592, guid: ea518440a0f7205d0a2f327b8f94c42c, type: 3}
-  thresholdDistance: 5
+  thresholdDistance: 3
 --- !u!114 &1194197435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -746,7 +761,7 @@ MonoBehaviour:
   prefab: {fileID: 0}
   Notification: 3
   Preload: 0
-  Capacity: 10
+  Capacity: 35
   Recycle: 1
   Persist: 0
   Stamp: 0
@@ -754,20 +769,6 @@ MonoBehaviour:
   spawnedClonesList: []
   despawnedClones: []
   delays: []
---- !u!114 &1194197436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1194197431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6086b31d0bd4675a34bfcc338f38781, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  obstacle: {fileID: 2211448115753183651, guid: ec466ac541701600a94e3378d6c6b3ad,
-    type: 3}
 --- !u!1 &1194403508
 GameObject:
   m_ObjectHideFlags: 0

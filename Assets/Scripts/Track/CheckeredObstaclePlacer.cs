@@ -1,9 +1,5 @@
-#region
-
 using Lean.Pool;
 using UnityEngine;
-
-#endregion
 
 namespace Track {
     public class CheckeredObstaclePlacer : ObstaclePlacer {
@@ -11,7 +7,7 @@ namespace Track {
 
         public GameObject obstacle;
 
-        public override void PlaceObstacles(TrackSection target, TrackSection[] previous) {
+        public override void PlaceObstacles(TrackSection target) {
             var lanes = target.GetLanes();
             var position = new Vector3(0, .5f, 0);
             for (var i = 0; i < lanes.Count; i++) {

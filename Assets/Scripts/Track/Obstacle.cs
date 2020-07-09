@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Track {
     public class Obstacle : MonoBehaviour, IPoolable {
-        public delegate void ObstacleWidthSetEvent(float width);
+        public delegate void ObstacleSizeSetEvent(Vector3 size);
 
         public const int ObstacleLayer = 8;
 
@@ -13,10 +13,10 @@ namespace Track {
         public void OnDespawn() {
         }
 
-        public static event ObstacleWidthSetEvent OnObstacleWidthSet;
+        public static event ObstacleSizeSetEvent OnObstacleWidthSet;
 
         public void Awake() {
-            OnObstacleWidthSet?.Invoke(GetComponent<MeshRenderer>().bounds.size.x);
+            OnObstacleWidthSet?.Invoke(GetComponent<MeshRenderer>().bounds.size);
         }
     }
 }

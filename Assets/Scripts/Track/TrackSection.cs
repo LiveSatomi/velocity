@@ -1,12 +1,8 @@
-﻿#region
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Lean.Pool;
 using Ship;
 using UnityEngine;
-
-#endregion
 
 namespace Track {
     public class TrackSection : MonoBehaviour, IPoolable {
@@ -34,7 +30,7 @@ namespace Track {
 
 
         public void OnSpawn() {
-            track.obstaclePlacer.PlaceObstacles(this, new TrackSection[] { });
+            track.obstaclePlacer.PlaceObstacles(this);
         }
 
         public void OnDespawn() {

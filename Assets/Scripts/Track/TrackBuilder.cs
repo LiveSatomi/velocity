@@ -1,12 +1,10 @@
-﻿#region
-
-using Lean.Pool;
+﻿using Lean.Pool;
 using UnityEngine;
-
-#endregion
 
 namespace Track {
     public class TrackBuilder : MonoBehaviour {
+        public const string Tag = "Track";
+
         private TrackSection lastSection;
 
         /// <summary>
@@ -35,7 +33,7 @@ namespace Track {
         }
 
         private TrackSection AddSection(Transform endpoint) {
-            var position = new Vector3(0, 0, endpoint.position.z + sectionBuilder.length / 2f);
+            var position = new Vector3(0, 0, endpoint.position.z + sectionBuilder.laneLength / 2f);
             var newSection = LeanPool.Spawn(trackSection, position, Quaternion.identity, transform);
             return newSection;
         }

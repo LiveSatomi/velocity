@@ -33,6 +33,11 @@ namespace Ship {
         private const float PartialRequirement = .2f;
 
         /// <summary>
+        ///     Tag for the player's object.
+        /// </summary>
+        public const string Tag = "Player";
+
+        /// <summary>
         ///     Cached animator parameter. Indicates the direction of the current lane change.
         /// </summary>
         private static readonly int AnimatorChangeDirection = Animator.StringToHash("changeDirection");
@@ -134,15 +139,22 @@ namespace Ship {
         /// </summary>
         private float shipWidth;
 
-        // TODO Initialize this from TrackBuilder or elsewhere
-        public float laneWidth = 2;
+        /// <summary>
+        ///     Distance that must be traversed to lock into the next lane over (includes gutter width).
+        /// </summary>
+        public float LaneWidth { get; private set; }
 
-        private float obstacleWidth = 1; // TODO set via event
+        /// <summary>
+        ///     The width of the obstacles that must be avoided.
+        /// </summary>
+        private float obstacleWidth;
 
         public static event CourseFinishedEvent OnCourseFinished;
 
         private void Awake() {
             shipWidth = GetComponent<MeshRenderer>().bounds.size.x;
+            var sectionBuilder = GameObject.FindWithTag(TrackBuilder.Tag).GetComponent<SectionBuilder>();
+            LaneWidth = sectionBuilder.laneWidth + sectionBuilder.gutterWidth;
             BaseSpeed = initialSpeed;
             inputAction = new ShipInputAction();
             inputAction.ShipControls.ChangeLane.performed += ctx => {
@@ -174,10 +186,10 @@ namespace Ship {
                 var collideTime = collideDistance / Speed;
                 var distanceToClear = (shipWidth + obstacleWidth) / 2;
 
-                var changeCapability = 1 / ChangeFrames * (collideTime / Time.deltaTime) * laneWidth;
-                var boostCapability = 1 / BoostFrames * (collideTime / Time.deltaTime) * laneWidth;
-                var partialBoostDistance = 1 / BoostFrames * (PartialRequirement * BoostFrames) * laneWidth;
-                var partialTurboDistance = 1 / TurboFrames * (PartialRequirement * TurboFrames) * laneWidth;
+                var changeCapability = 1 / ChangeFrames * (collideTime / Time.deltaTime) * LaneWidth;
+                var boostCapability = 1 / BoostFrames * (collideTime / Time.deltaTime) * LaneWidth;
+                var partialBoostDistance = 1 / BoostFrames * (PartialRequirement * BoostFrames) * LaneWidth;
+                var partialTurboDistance = 1 / TurboFrames * (PartialRequirement * TurboFrames) * LaneWidth;
 
 
                 if (boostCapability - Fudge < distanceToClear || partialTurboDistance > distanceToClear) {
@@ -190,12 +202,15 @@ namespace Ship {
                     animator.SetBool(AnimatorBoost, false);
                     animator.SetBool(AnimatorTurbo, false);
                 }
+            } else {
+                animator.SetBool(AnimatorBoost, false);
+                animator.SetBool(AnimatorTurbo, false);
             }
 
             var trans = transform;
             var positionNow = trans.position;
             if (Math.Abs(ChangeDirection) > .01) {
-                positionNow.x = changeProgress * ChangeDirection * laneWidth + ChangeStartPosition;
+                positionNow.x = changeProgress * ChangeDirection * LaneWidth + ChangeStartPosition;
             }
 
             positionNow.z = trans.position.z + Speed * Time.deltaTime;
@@ -204,17 +219,17 @@ namespace Ship {
 
 
         private void OnEnable() {
-            inputAction.Enable();
+            inputAction?.Enable();
             Obstacle.OnObstacleWidthSet += RegisterObstacleWidth;
         }
 
         private void OnDisable() {
-            inputAction.Disable();
+            inputAction?.Disable();
             Obstacle.OnObstacleWidthSet -= RegisterObstacleWidth;
         }
 
-        private void RegisterObstacleWidth(float width) {
-            obstacleWidth = width;
+        private void RegisterObstacleWidth(Vector3 size) {
+            obstacleWidth = size.x;
         }
 
         public void OnTriggerEnter(Collider other) {
@@ -237,6 +252,10 @@ namespace Ship {
 
         public void AddBoost() {
             speedBoost += boost;
+        }
+
+        public float CalculateClearDistance() {
+            return Math.Max(initialSpeed, Speed);
         }
     }
 }

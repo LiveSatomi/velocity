@@ -9,7 +9,7 @@ namespace Ship {
             var transform = shipDriver.transform;
 
             var pos = transform.position;
-            pos.x = shipDriver.ChangeStartPosition + shipDriver.laneWidth * shipDriver.ChangeDirection;
+            pos.x = shipDriver.ChangeStartPosition + shipDriver.LaneWidth * shipDriver.ChangeDirection;
             transform.position = pos;
 
             shipDriver.ChangeDirection = 0;

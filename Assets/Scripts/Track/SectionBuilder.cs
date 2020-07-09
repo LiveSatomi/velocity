@@ -1,9 +1,5 @@
-#region
-
 using UnityEngine;
 using Utility;
-
-#endregion
 
 namespace Track {
     ///
@@ -28,7 +24,7 @@ namespace Track {
         ///
         /// Difference between where the plane is entered and exited.
         ///
-        public int length = 10;
+        public int laneLength = 10;
 
         ///
         /// A prefab with components other than the mesh.
@@ -50,15 +46,15 @@ namespace Track {
 
             var startPoint = new GameObject("StartPoint") {tag = "StartPoint"};
             startPoint.transform.parent = trans;
-            startPoint.transform.localPosition = new Vector3(0, 0, -length / 2f);
+            startPoint.transform.localPosition = new Vector3(0, 0, -laneLength / 2f);
 
             var endPoint = new GameObject("EndPoint") {tag = "EndPoint"};
             endPoint.transform.parent = trans;
-            endPoint.transform.localPosition = new Vector3(0, 0, length / 2f);
+            endPoint.transform.localPosition = new Vector3(0, 0, laneLength / 2f);
 
             var threshold = new GameObject("Threshold") {tag = "Threshold"};
             threshold.transform.parent = trans;
-            threshold.transform.localPosition = new Vector3(0, 0, -length / 2f - thresholdDistance);
+            threshold.transform.localPosition = new Vector3(0, 0, -laneLength / 2f - thresholdDistance);
 
 
             for (var i = -lanes; i < lanes; i++) {
@@ -83,7 +79,7 @@ namespace Track {
             laneSection.transform.position = new Vector3(offset, 0, 0);
 
             var sectionMesh =
-                MeshCreator.CreatePlane("GeneratedPlane", 1, 2, width, length, Orientation.Horizontal, false);
+                MeshCreator.CreatePlane("GeneratedPlane", 1, 2, width, laneLength, Orientation.Horizontal, false);
 
             var sectionFilter = laneSection.gameObject.AddComponent<MeshFilter>();
             sectionFilter.sharedMesh = sectionMesh;
