@@ -59,10 +59,6 @@ namespace Track {
         /// </summary>
         private float maximumNudgeDistance;
 
-        /// <summary>
-        ///     TODO delete
-        /// </summary>
-        private int populatedLane = 5;
 
         /// <summary>
         ///     Cached player object
@@ -85,53 +81,57 @@ namespace Track {
         public override void PlaceObstacles(TrackSection target) {
             var lanes = target.GetLanes();
 
-            var layerPreCount = layer0.Count;
 
-            var existenceCrossSection = new ExistenceLayer[1];
-            existenceCrossSection[0] =
-                new ExistenceLayer(random.NextDouble() < existenceProbability, lanes[populatedLane]);
-            layer0.Add(existenceCrossSection);
+            AddLayer0Data(lanes);
+            AddLayer1Data(lanes);
 
+            var lastLayerCount = layer1.Count;
 
-            layerPreCount--;
+            for (var lane = 0; lane < lanes.Count; lane++) {
+                var existenceLayer = layer0[lastLayerCount - 1][lane];
+                var nudgeLayer = layer1[lastLayerCount - 1][lane];
+                if (existenceLayer.Exists && nudgeLayer.Nudge < maximumNudgeDistance) {
+                    var position = new Vector3(0, .5f, -(laneLength / 2 - obstacleLength / 2) + nudgeLayer.Nudge);
+                    LeanPool.Spawn(obstacle, position, Quaternion.identity, existenceLayer.Track, false);
+                }
+            }
+        }
 
-            if (layerPreCount < 0) {
-                return;
+        private void AddLayer0Data(List<Transform> lanes) {
+            var existenceCrossSection = new ExistenceLayer[lanes.Count];
+            for (var lane = 0; lane < lanes.Count; lane++) {
+                existenceCrossSection[lane] =
+                    new ExistenceLayer(random.NextDouble() < existenceProbability, lanes[lane]);
             }
 
-            // Start calculating layer 1 data
+            layer0.Add(existenceCrossSection);
+        }
 
+        private void AddLayer1Data(List<Transform> lanes) {
+            var layerPreCount = layer1.Count;
 
-            var nudgeCrossSection = new NudgeLayer[1];
-
-            if (layer0[layerPreCount][0].Exists) {
-                var neededNudge = 0f;
-                var clearDistance = ship.CalculateClearDistance();
-                for (var i = layerPreCount - 1;
-                    i >= 0 && i > layerPreCount - Math.Ceiling(clearDistance / laneLength);
-                    i--) {
-                    if (layer0[i][0].Exists && layer1[i][0].Nudge < maximumNudgeDistance) {
-                        neededNudge = Math.Max(0,
-                            clearDistance - (layerPreCount - i) * laneLength + layer1[i][0].Nudge);
-                        break;
+            var nudgeCrossSection = new NudgeLayer[lanes.Count];
+            for (var lane = 0; lane < lanes.Count; lane++) {
+                if (layer0[layerPreCount][lane].Exists) {
+                    var neededNudge = 0f;
+                    var clearDistance = ship.CalculateClearDistance();
+                    for (var sec = layerPreCount - 1;
+                        sec >= 0 && sec > layerPreCount - Math.Ceiling(clearDistance / laneLength);
+                        sec--) {
+                        if (layer0[sec][lane].Exists && layer1[sec][lane].Nudge < maximumNudgeDistance) {
+                            neededNudge = Math.Max(0,
+                                clearDistance - (layerPreCount - sec) * laneLength + layer1[sec][lane].Nudge);
+                            break;
+                        }
                     }
-                }
 
-                nudgeCrossSection[0] = new NudgeLayer(neededNudge);
-            } else {
-                nudgeCrossSection[0] = new NudgeLayer(0);
+                    nudgeCrossSection[lane] = new NudgeLayer(neededNudge);
+                } else {
+                    nudgeCrossSection[lane] = new NudgeLayer(0);
+                }
             }
 
             layer1.Add(nudgeCrossSection);
-
-
-            var existenceLayer = layer0[layerPreCount][0];
-            var nudgeLayer = layer1[layerPreCount][0];
-            if (existenceLayer.Exists && nudgeLayer.Nudge < maximumNudgeDistance) {
-                var position = new Vector3(0, .5f, -(laneLength / 2 - obstacleLength / 2) + nudgeLayer.Nudge);
-                var lane = existenceLayer.Track;
-                LeanPool.Spawn(obstacle, position, Quaternion.identity, lane, false);
-            }
         }
     }
 }

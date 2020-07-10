@@ -6,14 +6,19 @@ using UnityEngine;
 
 namespace Track {
     public class TrackSection : MonoBehaviour, IPoolable {
-        public Material gutterMaterial;
-
-        public Material laneMaterial;
-
+        /// <summary>
+        ///     The player controlled ship
+        /// </summary>
         private ShipDriver ship;
 
+        /// <summary>
+        ///     State representing whether the ship has reached the Threshold position or not.
+        /// </summary>
         private bool thresholdPassed;
 
+        /// <summary>
+        ///     A reference to the parent track.
+        /// </summary>
         private TrackBuilder track;
 
         /// <summary>
@@ -21,18 +26,33 @@ namespace Track {
         /// </summary>
         public int Lanes { get; set; }
 
-
+        /// <summary>
+        ///     A transform with a position before the StartPoint at which a new TrackSection should be spawned for the player to
+        ///     see.
+        /// </summary>
         public Transform Threshold { get; private set; }
 
+        /// <summary>
+        ///     A transform with a position representing the bounds of mesh where the player will enter it.
+        /// </summary>
         public Transform StartPoint { get; private set; }
 
+        /// <summary>
+        ///     A transform with a position representing the bounds of mesh where the player will leave it.
+        /// </summary>
         public Transform EndPoint { get; private set; }
 
 
+        /// <summary>
+        ///     Spawns obstacles on the section.
+        /// </summary>
         public void OnSpawn() {
-            track.obstaclePlacer.PlaceObstacles(this);
+            track.PlaceObstacles(this);
         }
 
+        /// <summary>
+        ///     Resets object and despawns all owned obstacles.
+        /// </summary>
         public void OnDespawn() {
             thresholdPassed = false;
             foreach (var lane in GetLanes()) {
@@ -51,6 +71,9 @@ namespace Track {
             track = GameObject.FindWithTag("Track").GetComponent<TrackBuilder>();
         }
 
+        /// <summary>
+        ///     Keeps track of whether this object has been passed by the ship.
+        /// </summary>
         private void Update() {
             if (!thresholdPassed && ship.transform.position.z > Threshold.transform.position.z) {
                 track.AddSection();
@@ -58,6 +81,10 @@ namespace Track {
             }
         }
 
+        /// <summary>
+        ///     Gets a list of the objects that make of the sections of lane owned by this object.
+        /// </summary>
+        /// <returns>A list of transforms for each mesh that makes up a lane.</returns>
         public List<Transform> GetLanes() {
             var lanes = transform.Find("Lanes").Cast<Transform>().ToList();
             return lanes;

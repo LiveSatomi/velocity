@@ -255,7 +255,7 @@ namespace Ship {
         }
 
         public float CalculateClearDistance() {
-            return Math.Max(initialSpeed, Speed);
+            return Math.Max(initialSpeed + turbo, Speed + turbo);
         }
     }
 }

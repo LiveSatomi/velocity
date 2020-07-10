@@ -6,6 +6,17 @@ namespace Track {
     /// Builds the mesh for a TrackSection. Pivot is in the midpoint of the plane.
     ///
     public class SectionBuilder : MonoBehaviour {
+        /// <summary>
+        /// Material used for the inner lane.
+        /// </summary>
+        public Material laneMaterial;
+
+        /// <summary>
+        /// Material used for the gutter.
+        /// </summary>
+        public Material gutterMaterial;
+
+
         ///
         /// Size of the space between the lanes.
         ///
@@ -59,9 +70,9 @@ namespace Track {
 
             for (var i = -lanes; i < lanes; i++) {
                 var offset = i * (laneWidth + gutterWidth);
-                var laneSection = CreateSectionMesh("LaneSection", offset, laneWidth, section.laneMaterial);
+                var laneSection = CreateSectionMesh("LaneSection", offset, laneWidth, laneMaterial);
                 offset = i * (laneWidth + gutterWidth) + (laneWidth + gutterWidth) / 2.0f;
-                var gutterSection = CreateSectionMesh("GutterSection", offset, gutterWidth, section.gutterMaterial);
+                var gutterSection = CreateSectionMesh("GutterSection", offset, gutterWidth, gutterMaterial);
                 laneSection.transform.parent = trans.Find("Lanes").transform;
                 gutterSection.transform.parent = trans.Find("Gutters").transform;
             }

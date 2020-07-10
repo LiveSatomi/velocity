@@ -679,7 +679,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacle: {fileID: 2211448115753183651, guid: ec466ac541701600a94e3378d6c6b3ad,
     type: 3}
-  existenceProbability: 1
+  existenceProbability: 0.331
 --- !u!1 &1194197431
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,7 +725,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7ecee7041deee63b0cdea38a37cdd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookAhead: 11
+  lookAhead: 26
+  emptyInitialSections: 3
   obstaclePlacer: {fileID: 1121464301}
   sectionBuilder: {fileID: 1194197434}
 --- !u!114 &1194197434
