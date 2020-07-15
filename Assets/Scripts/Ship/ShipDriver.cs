@@ -7,6 +7,8 @@ namespace Ship {
     public class ShipDriver : MonoBehaviour {
         public delegate void CourseFinishedEvent();
 
+        public delegate void LaneChangeEvent(LaneChangeType type);
+
         /// <summary>
         ///     Number of frames the lane change animation takes.
         /// </summary>
@@ -117,17 +119,17 @@ namespace Ship {
         /// <summary>
         ///     State that represents the direction of the lane change being executed.
         /// </summary>
-        public float ChangeDirection { get; set; }
+        private float changeDirection;
 
         /// <summary>
         ///     State that tells where the animation started. Used to adjust for rounding errors at the end of each lane change.
         /// </summary>
-        public float ChangeStartPosition { get; set; }
+        private float changeStartPosition;
 
         /// <summary>
-        ///     Unity InputAction that controls the ship.
+        ///     Sets fields directly related to player input.
         /// </summary>
-        private ShipInputAction inputAction;
+        private ShipInputController inputController;
 
         /// <summary>
         ///     State tied to the an input representing the desired direction to change lanes.
@@ -142,24 +144,33 @@ namespace Ship {
         /// <summary>
         ///     Distance that must be traversed to lock into the next lane over (includes gutter width).
         /// </summary>
-        public float LaneWidth { get; private set; }
+        private float laneWidth;
 
         /// <summary>
         ///     The width of the obstacles that must be avoided.
         /// </summary>
         private float obstacleWidth;
 
-        public static event CourseFinishedEvent OnCourseFinished;
+        /// <summary>
+        ///     Event that is invoked when the player crashes or otherwise quits.
+        /// </summary>
+        public event CourseFinishedEvent OnCourseFinished;
+
+        /// <summary>
+        ///     Event that is invoked when a lane change starts.
+        /// </summary>
+        public event LaneChangeEvent OnLaneChanged;
 
         private void Awake() {
             shipWidth = GetComponent<MeshRenderer>().bounds.size.x;
             var sectionBuilder = GameObject.FindWithTag(TrackBuilder.Tag).GetComponent<SectionBuilder>();
-            LaneWidth = sectionBuilder.laneWidth + sectionBuilder.gutterWidth;
+            laneWidth = sectionBuilder.laneWidth + sectionBuilder.gutterWidth;
+
             BaseSpeed = initialSpeed;
-            inputAction = new ShipInputAction();
-            inputAction.ShipControls.ChangeLane.performed += ctx => {
-                InputDirection = Math.Sign(ctx.ReadValue<float>());
-            };
+
+            inputController = GetComponent<ShipInputController>();
+            inputController.OnDirectionChanged += (dir) => { InputDirection = dir; };
+
             animator = GetComponent<Animator>();
             foreach (Transform trans in transform) {
                 if (trans.name == "Front") {
@@ -186,10 +197,10 @@ namespace Ship {
                 var collideTime = collideDistance / Speed;
                 var distanceToClear = (shipWidth + obstacleWidth) / 2;
 
-                var changeCapability = 1 / ChangeFrames * (collideTime / Time.deltaTime) * LaneWidth;
-                var boostCapability = 1 / BoostFrames * (collideTime / Time.deltaTime) * LaneWidth;
-                var partialBoostDistance = 1 / BoostFrames * (PartialRequirement * BoostFrames) * LaneWidth;
-                var partialTurboDistance = 1 / TurboFrames * (PartialRequirement * TurboFrames) * LaneWidth;
+                var changeCapability = 1 / ChangeFrames * (collideTime / Time.deltaTime) * laneWidth;
+                var boostCapability = 1 / BoostFrames * (collideTime / Time.deltaTime) * laneWidth;
+                var partialBoostDistance = 1 / BoostFrames * (PartialRequirement * BoostFrames) * laneWidth;
+                var partialTurboDistance = 1 / TurboFrames * (PartialRequirement * TurboFrames) * laneWidth;
 
 
                 if (boostCapability - Fudge < distanceToClear || partialTurboDistance > distanceToClear) {
@@ -209,8 +220,8 @@ namespace Ship {
 
             var trans = transform;
             var positionNow = trans.position;
-            if (Math.Abs(ChangeDirection) > .01) {
-                positionNow.x = changeProgress * ChangeDirection * LaneWidth + ChangeStartPosition;
+            if (Math.Abs(changeDirection) > .01) {
+                positionNow.x = changeProgress * changeDirection * laneWidth + changeStartPosition;
             }
 
             positionNow.z = trans.position.z + Speed * Time.deltaTime;
@@ -219,12 +230,10 @@ namespace Ship {
 
 
         private void OnEnable() {
-            inputAction?.Enable();
             Obstacle.OnObstacleWidthSet += RegisterObstacleWidth;
         }
 
         private void OnDisable() {
-            inputAction?.Disable();
             Obstacle.OnObstacleWidthSet -= RegisterObstacleWidth;
         }
 
@@ -254,8 +263,48 @@ namespace Ship {
             speedBoost += boost;
         }
 
+        /// <summary>
+        ///     Returns whether an immediate lane change would cause a boost change.
+        /// </summary>
+        public bool CanBoost() {
+            return animator.GetBool(AnimatorBoost);
+        }
+
+        /// <summary>
+        ///     Returns whether an immediate lane change would cause a turbo change.
+        /// </summary>
+        public bool CanTurbo() {
+            return animator.GetBool(AnimatorTurbo);
+        }
+
+        /// <summary>
+        ///     Returns a distance that should be kept clear behind obstacles so that the player does not encounter consecutive
+        ///     obstacles in nearby lanes.
+        /// </summary>
+        /// <returns>A distance after a given obstacle based on current player state.</returns>
         public float CalculateClearDistance() {
             return Math.Max(initialSpeed + turbo, Speed + turbo);
+        }
+
+        /// <summary>
+        ///     Begins tracking state needed during a lane change and sets flags that trigger the change in the animator.
+        /// </summary>
+        /// <param name="type">The type of lane change that is beginning.</param>
+        public void StartChange(LaneChangeType type) {
+            changeDirection = InputDirection;
+            changeStartPosition = transform.position.x;
+            OnLaneChanged?.Invoke(type);
+        }
+
+        /// <summary>
+        ///     Resets state related to lane changes.
+        /// </summary>
+        public void EndChange() {
+            var trans = transform;
+            var pos = trans.position;
+            pos.x = changeStartPosition + laneWidth * changeDirection;
+            trans.position = pos;
+            changeDirection = 0;
         }
     }
 }

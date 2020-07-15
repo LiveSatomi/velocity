@@ -1,9 +1,5 @@
-#region
-
 using Ship;
 using UnityEngine;
-
-#endregion
 
 namespace Controller {
     /// <summary>
@@ -17,11 +13,11 @@ namespace Controller {
         public TimeController timeController;
 
         public void OnEnable() {
-            ShipDriver.OnCourseFinished += CollectFinalStats;
+            ship.OnCourseFinished += CollectFinalStats;
         }
 
         public void OnDisable() {
-            ShipDriver.OnCourseFinished -= CollectFinalStats;
+            ship.OnCourseFinished -= CollectFinalStats;
         }
 
         private void CollectFinalStats() {

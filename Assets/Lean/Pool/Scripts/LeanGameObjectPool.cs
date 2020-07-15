@@ -1,11 +1,14 @@
-﻿#if UNITY_EDITOR
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Lean.Common;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+#if UNITY_EDITOR
+using UnityEditor;
 
+#endif
+
+#if UNITY_EDITOR
 namespace Lean.Pool {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(LeanGameObjectPool))]

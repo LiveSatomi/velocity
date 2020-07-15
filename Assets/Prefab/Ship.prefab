@@ -215,7 +215,6 @@ MonoBehaviour:
   chargePercentage: 0.3
   decayRate: 0.3
   changeProgress: 0
-  laneWidth: 2
 --- !u!95 &308159208
 Animator:
   serializedVersion: 3

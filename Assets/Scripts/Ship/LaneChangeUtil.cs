@@ -1,18 +1,11 @@
 namespace Ship {
     public static class LaneChangeUtil {
-        public static void StartChange(ShipDriver shipDriver) {
-            shipDriver.ChangeDirection = shipDriver.InputDirection;
-            shipDriver.ChangeStartPosition = shipDriver.transform.position.x;
+        public static void StartChange(ShipDriver shipDriver, LaneChangeType type) {
+            shipDriver.StartChange(type);
         }
 
         public static void EndChange(ShipDriver shipDriver) {
-            var transform = shipDriver.transform;
-
-            var pos = transform.position;
-            pos.x = shipDriver.ChangeStartPosition + shipDriver.LaneWidth * shipDriver.ChangeDirection;
-            transform.position = pos;
-
-            shipDriver.ChangeDirection = 0;
+            shipDriver.EndChange();
         }
     }
 }

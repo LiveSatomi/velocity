@@ -1,15 +1,11 @@
 // GENERATED AUTOMATICALLY FROM 'Assets/Input/ShipInputAction.inputactions'
 
-#region
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using Object = UnityEngine.Object;
-
-#endregion
 
 public class @ShipInputAction : IInputActionCollection, IDisposable {
     private InputActionAsset asset;
@@ -21,6 +17,8 @@ public class @ShipInputAction : IInputActionCollection, IDisposable {
 
     private readonly InputAction m_ShipControls_ChangeLane;
 
+    public ShipControlsActions @ShipControls => new ShipControlsActions(this);
+
     public @ShipInputAction() {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""ShipInputAction"",
@@ -31,7 +29,7 @@ public class @ShipInputAction : IInputActionCollection, IDisposable {
             ""actions"": [
                 {
                     ""name"": ""ChangeLane"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Value"",
                     ""id"": ""6e0bf8a1-b130-4a71-889b-a3226c6dd4f7"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
@@ -39,6 +37,17 @@ public class @ShipInputAction : IInputActionCollection, IDisposable {
                 }
             ],
             ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""5b94c300-b037-4684-9d51-1d8cde17cc34"",
+                    ""path"": ""<Touchscreen>/primaryTouch/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeLane"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
                 {
                     ""name"": ""Arrow"",
                     ""id"": ""558bfff3-9e53-44c7-8ae6-f34c43ed5565"",
@@ -81,8 +90,6 @@ public class @ShipInputAction : IInputActionCollection, IDisposable {
         m_ShipControls = asset.FindActionMap("ShipControls", true);
         m_ShipControls_ChangeLane = m_ShipControls.FindAction("ChangeLane", true);
     }
-
-    public ShipControlsActions @ShipControls => new ShipControlsActions(this);
 
     public void Dispose() {
         Object.Destroy(asset);

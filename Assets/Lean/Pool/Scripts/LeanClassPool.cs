@@ -1,9 +1,5 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-
-#endregion
 
 namespace Lean.Pool {
     /// <summary>

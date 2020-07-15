@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "name": "ChangeLane",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "6e0bf8a1-b130-4a71-889b-a3226c6dd4f7",
                     "expectedControlType": "Axis",
                     "processors": "",
@@ -15,6 +15,17 @@
                 }
             ],
             "bindings": [
+                {
+                    "name": "",
+                    "id": "5b94c300-b037-4684-9d51-1d8cde17cc34",
+                    "path": "<Touchscreen>/primaryTouch/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeLane",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
                 {
                     "name": "Arrow",
                     "id": "558bfff3-9e53-44c7-8ae6-f34c43ed5565",

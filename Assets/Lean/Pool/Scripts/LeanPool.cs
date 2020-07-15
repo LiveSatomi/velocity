@@ -1,10 +1,6 @@
-﻿#region
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Lean.Common;
 using UnityEngine;
-
-#endregion
 
 namespace Lean.Pool {
     /// <summary>
